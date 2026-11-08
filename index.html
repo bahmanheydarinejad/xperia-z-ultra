@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" data-theme="adminlte-blue">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sony Xperia Z Ultra (togari) — Linux & SBC Architecture Specification</title>
+  
+  <!-- Local Bootstrap 5 Core Stylesheet (Swappable by Theme Dropdown) -->
+  <link rel="stylesheet" id="bootstrap-theme-link" href="assets/css/bootstrap.min.css">
+  
+  <!-- Local Bootstrap Icons -->
+  <link rel="stylesheet" href="assets/css/bootstrap-icons.min.css">
+
+  <style>
+    /* ==========================================================================
+       Custom Theme Overlays & CSS Variables for Xperia Z Ultra Linux Guide
+       ========================================================================== */
+    :root, [data-theme="adminlte-blue"] {
+      --app-bg-body: #0b111e;
+      --app-bg-sidebar: #111a2e;
+      --app-bg-card: #15203b;
+      --app-bg-card-inner: #1c2b4d;
+      --app-bg-card-hover: #22345e;
+      --app-border: #233558;
+      --app-border-light: #324b7a;
+      
+      --app-primary: #3c8dbc;
+      --app-primary-light: #60a8d6;
+      --app-primary-dark: #286090;
+      --app-primary-glow: rgba(60, 141, 188, 0.28);
+      
+      --app-success: #00a65a;
+      --app-info: #00c0ef;
+      --app-warning: #f39c12;
+      --app-danger: #dd4b39;
+      --app-purple: #9b59b6;
+      
+      --app-text: #f8fafc;
+      --app-text-muted: #94a3b8;
+      --app-text-dim: #64748b;
+      --app-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    [data-theme="darkly"] {
+      --app-bg-body: #222222;
+      --app-bg-sidebar: #1a1a1a;
+      --app-bg-card: #303030;
+      --app-bg-card-inner: #3a3a3a;
+      --app-bg-card-hover: #444444;
+      --app-border: #444444;
+      --app-border-light: #555555;
+      
+      --app-primary: #375a7f;
+      --app-primary-light: #4b7db3;
+      --app-primary-dark: #2b4764;
+      --app-primary-glow: rgba(55, 90, 127, 0.35);
+      
+      --app-success: #00bc8c;
+      --app-info: #3498db;
+      --app-warning: #f39c12;
+      --app-danger: #e74c3c;
+      --app-purple: #af69ee;
+      
+      --app-text: #ffffff;
+      --app-text-muted: #adb5bd;
+      --app-text-dim: #777777;
+    }
+
+    [data-theme="flatly"] {
+      --app-bg-body: #f8fafc;
+      --app-bg-sidebar: #2c3e50;
+      --app-bg-card: #ffffff;
+      --app-bg-card-inner: #f1f5f9;
+      --app-bg-card-hover: #e2e8f0;
+      --app-border: #e2e8f0;
+      --app-border-light: #cbd5e1;
+      
+      --app-primary: #2c3e50;
+      --app-primary-light: #34495e;
+      --app-primary-dark: #1a252f;
+      --app-primary-glow: rgba(44, 62, 80, 0.2);
+      
+      --app-success: #18bc9c;
+      --app-info: #3498db;
+      --app-warning: #f39c12;
+      --app-danger: #e74c3c;
+      --app-purple: #8e44ad;
+      
+      --app-text: #212529;
+      --app-text-muted: #64748b;
+      --app-text-dim: #94a3b8;
+    }
+
+    [data-theme="cyborg"] {
+      --app-bg-body: #060606;
+      --app-bg-sidebar: #0f0f0f;
+      --app-bg-card: #181818;
+      --app-bg-card-inner: #242424;
+      --app-bg-card-hover: #303030;
+      --app-border: #282828;
+      --app-border-light: #444444;
+      
+      --app-primary: #2a9fd6;
+      --app-primary-light: #54b4e2;
+      --app-primary-dark: #1b6d94;
+      --app-primary-glow: rgba(42, 159, 214, 0.35);
+      
+      --app-success: #77b300;
+      --app-info: #9933cc;
+      --app-warning: #ff8800;
+      --app-danger: #cc0000;
+      --app-purple: #9933cc;
+      
+      --app-text: #ffffff;
+      --app-text-muted: #888888;
+      --app-text-dim: #555555;
+    }
+
+    [data-theme="pulse"] {
+      --app-bg-body: #191424;
+      --app-bg-sidebar: #221a33;
+      --app-bg-card: #2c2242;
+      --app-bg-card-inner: #362a52;
+      --app-bg-card-hover: #433466;
+      --app-border: #413263;
+      --app-border-light: #594487;
+      
+      --app-primary: #af69ee;
+      --app-primary-light: #c68ff3;
+      --app-primary-dark: #8c3ed6;
+      --app-primary-glow: rgba(175, 105, 238, 0.35);
+      
+      --app-success: #00c851;
+      --app-info: #33b5e5;
+      --app-warning: #ffbb33;
+      --app-danger: #ff4444;
+      --app-purple: #af69ee;
+      
+      --app-text: #f3f0f7;
+      --app-text-muted: #b8afc8;
+      --app-text-dim: #847799;
+    }
+
+    [data-theme="emerald"] {
+      --app-bg-body: #0d1b18;
+      --app-bg-sidebar: #132722;
+      --app-bg-card: #19332c;
+      --app-bg-card-inner: #204138;
+      --app-bg-card-hover: #295448;
+      --app-border: #2c584c;
+      --app-border-light: #3d7969;
+      
+      --app-primary: #10b981;
+      --app-primary-light: #34d399;
+      --app-primary-dark: #059669;
+      --app-primary-glow: rgba(16, 185, 129, 0.3);
+      
+      --app-success: #10b981;
+      --app-info: #06b6d4;
+      --app-warning: #f59e0b;
+      --app-danger: #ef4444;
+      --app-purple: #a855f7;
+      
+      --app-text: #f0fdf4;
+      --app-text-muted: #a7f3d0;
+      --app-text-dim: #6ee7b7;
+    }
+
+    /* Base Layout */
+    body {
+      background-color: var(--app-bg-body);
+      color: var(--app-text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      margin: 0;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Fixed Sidebar */
+    aside.sidebar {
+      width: 290px;
+      min-width: 290px;
+      background-color: var(--app-bg-sidebar);
+      border-right: 1px solid var(--app-border);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 1030;
+    }
+
+    aside.sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    aside.sidebar::-webkit-scrollbar-thumb {
+      background: var(--app-border);
+      border-radius: 3px;
+    }
+
+    /* Brand Logo Box */
+    .brand-logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--app-border);
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--app-primary), var(--app-primary-dark));
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--app-primary-glow);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title h1 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--app-text);
+    }
+    .brand-title p {
+      font-size: 11px;
+      margin: 0;
+      color: var(--app-text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    /* Navigation Links */
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--app-text-dim);
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-list li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: var(--app-text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .nav-list li a:hover,
+    .nav-list li a.active {
+      background-color: var(--app-bg-card-inner);
+      color: var(--app-primary-light);
+    }
+
+    .nav-list li a i {
+      font-size: 16px;
+    }
+
+    /* Main Content Area */
+    main.content {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+      max-width: 1440px;
+    }
+
+    /* Top Control Bar */
+    .top-control-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--app-border);
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--app-bg-card), var(--app-bg-card-inner));
+      border: 1px solid var(--app-border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, var(--app-primary-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+      background-color: var(--app-bg-card);
+      border: 1px solid var(--app-border);
+      border-radius: 10px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--app-primary);
+      box-shadow: 0 8px 24px var(--app-primary-glow);
+    }
+
+    .feature-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h4 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--app-text);
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 13.5px;
+      color: var(--app-text-muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .tech-pill-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .tech-pill {
+      font-size: 11px;
+      font-family: var(--app-font-mono);
+      padding: 4px 8px;
+      border-radius: 4px;
+      background-color: var(--app-bg-card-inner);
+      color: var(--app-text-muted);
+      border: 1px solid var(--app-border-light);
+    }
+
+    /* Code Pills and Tags */
+    .code-pill {
+      font-family: var(--app-font-mono);
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--app-bg-card-inner);
+      color: var(--app-primary-light);
+      border: 1px solid var(--app-border-light);
+    }
+
+    /* Custom Tables */
+    .table-container {
+      background-color: var(--app-bg-card);
+      border: 1px solid var(--app-border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .table-custom {
+      width: 100%;
+      margin-bottom: 0;
+      color: var(--app-text);
+      border-collapse: collapse;
+    }
+
+    .table-custom th {
+      background-color: var(--app-bg-card-inner);
+      color: var(--app-primary-light);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--app-border);
+    }
+
+    .table-custom td {
+      padding: 14px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--app-border);
+      vertical-align: middle;
+    }
+
+    .table-custom tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-custom tr:hover td {
+      background-color: var(--app-bg-card-hover);
+    }
+
+    /* Code Block Box */
+    .terminal-box {
+      background-color: #050811;
+      border: 1px solid var(--app-border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: var(--app-font-mono);
+      font-size: 12.5px;
+      color: #7dd3fc;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    /* Interactive Mockup Studio */
+    .mockup-window {
+      background: var(--app-bg-card);
+      border: 1px solid var(--app-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .mockup-header-bar {
+      background: var(--app-bg-card-inner);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--app-border);
+    }
+
+    .mockup-body {
+      padding: 24px;
+    }
+
+    .metric-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       Device Visuals & Photo Gallery Styles (From Digikala Reference)
+       ========================================================================== */
+    .hero-device-wrapper {
+      background: radial-gradient(circle at center, var(--app-primary-glow) 0%, rgba(0,0,0,0.4) 70%);
+      border: 1px solid var(--app-border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-device-wrapper:hover {
+      border-color: var(--app-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--app-primary-glow);
+    }
+    .hero-device-img {
+      max-height: 210px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.6));
+      transition: transform 0.3s ease;
+    }
+    .hero-device-wrapper:hover .hero-device-img {
+      transform: scale(1.03);
+    }
+
+    .gallery-filter-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 20px;
+      transition: all 0.15s ease;
+    }
+    .gallery-filter-btn.active {
+      background-color: var(--app-primary) !important;
+      color: #ffffff !important;
+      border-color: var(--app-primary) !important;
+      box-shadow: 0 2px 8px var(--app-primary-glow);
+    }
+
+    .gallery-card {
+      background: var(--app-bg-card);
+      border: 1px solid var(--app-border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.22s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--app-primary);
+      box-shadow: 0 10px 24px var(--app-primary-glow);
+    }
+    .gallery-thumb-container {
+      position: relative;
+      background: #060911;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 210px;
+      overflow: hidden;
+    }
+    .gallery-thumb-container img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      transition: transform 0.35s ease;
+    }
+    .gallery-card:hover .gallery-thumb-container img {
+      transform: scale(1.08);
+    }
+    .gallery-card-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(10, 15, 25, 0.75);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 2;
+    }
+    .gallery-zoom-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      background: var(--app-primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+    .gallery-card:hover .gallery-zoom-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .gallery-card-info {
+      padding: 12px 14px;
+      background: var(--app-bg-card-inner);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 1px solid var(--app-border);
+    }
+    .gallery-card-info h6 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--app-text);
+    }
+    .gallery-card-info p {
+      font-size: 11.5px;
+      color: var(--app-text-muted);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Lightbox Modal Customization */
+    .lightbox-modal-content {
+      background-color: var(--app-bg-card);
+      border: 1px solid var(--app-border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    .lightbox-img-stage {
+      background: #04070e;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      max-height: 65vh;
+    }
+    .lightbox-img-stage img {
+      max-height: 58vh;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       SIDEBAR NAVIGATION
+       ======================================================================== -->
+  <aside class="sidebar">
+    <div class="brand-logo-box">
+      <div class="brand-badge"><i class="bi bi-cpu-fill"></i></div>
+      <div class="brand-title">
+        <h1>Xperia Z Ultra</h1>
+        <p>Linux SBC &amp; OS Architect</p>
+      </div>
+    </div>
+
+    <!-- Live Search Filter -->
+    <div>
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-search"></i></span>
+        <input type="text" id="featureSearch" class="form-control bg-dark border-secondary text-light" 
+               placeholder="Filter sections..." oninput="filterSidebar()">
+      </div>
+    </div>
+
+    <!-- Navigation List -->
+    <div class="nav-group-title">Core Specifications</div>
+    <ul class="nav-list" id="navSpec">
+      <li><a href="#deployment-tracker" class="active text-warning"><i class="bi bi-broadcast"></i> Live Action Tracker</a></li>
+      <li><a href="#overview"><i class="bi bi-info-circle"></i> Executive Summary</a></li>
+      <li><a href="#device-gallery"><i class="bi bi-images text-info"></i> Device Photo Gallery</a></li>
+      <li><a href="#hardware-specs"><i class="bi bi-motherboard"></i> Hardware Specs (togari)</a></li>
+      <li><a href="#sbc-feasibility"><i class="bi bi-speedometer2"></i> SBC Feasibility Matrix</a></li>
+    </ul>
+
+    <div class="nav-group-title">The 7 Ways to Run Linux</div>
+    <ul class="nav-list" id="navWays">
+      <li><a href="#comparison-matrix"><i class="bi bi-table"></i> Master Comparison Matrix</a></li>
+      <li><a href="#way-1"><i class="bi bi-1-circle-fill text-success"></i> 1. Android + Chroot (Best)</a></li>
+      <li><a href="#way-2"><i class="bi bi-2-circle-fill text-primary"></i> 2. postmarketOS (Native)</a></li>
+      <li><a href="#way-3"><i class="bi bi-3-circle-fill text-info"></i> 3. Termux + PRoot</a></li>
+      <li><a href="#way-4"><i class="bi bi-4-circle-fill text-warning"></i> 4. Linux Deploy (Loop)</a></li>
+      <li><a href="#way-5"><i class="bi bi-5-circle-fill text-purple"></i> 5. Ubuntu Touch / Halium</a></li>
+      <li><a href="#way-6"><i class="bi bi-6-circle-fill text-danger"></i> 6. Sailfish OS</a></li>
+      <li><a href="#way-7"><i class="bi bi-7-circle-fill text-secondary"></i> 7. Halium + Debian Core</a></li>
+    </ul>
+
+    <div class="nav-group-title">Deep Technical Engineering</div>
+    <ul class="nav-list" id="navEng">
+      <li><a href="#drivers"><i class="bi bi-tools"></i> Driver Challenges Breakdown</a></li>
+      <li><a href="#power-acc"><i class="bi bi-battery-charging"></i> 24/7 Power &amp; Thermal Care</a></li>
+      <li><a href="#dock-pinout"><i class="bi bi-usb-plug"></i> Magnetic Dock &amp; OTG Pinout</a></li>
+    </ul>
+
+    <div class="nav-group-title">Interactive Workbench</div>
+    <ul class="nav-list" id="navTools">
+      <li><a href="#interactive-simulator"><i class="bi bi-calculator"></i> Architecture Chooser</a></li>
+      <li><a href="#playbook"><i class="bi bi-terminal"></i> Fastboot &amp; Root Playbook</a></li>
+    </ul>
+
+    <!-- Device Specs Pill in Sidebar -->
+    <div class="p-3 rounded-3 mt-auto" style="background: var(--app-bg-card-inner); border: 1px solid var(--app-border);">
+      <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom border-secondary">
+        <img src="assets/images/xperia-z-ultra-main.jpg" alt="Sony Xperia Z Ultra" style="width: 38px; height: 38px; object-fit: contain; border-radius: 6px; background: rgba(0,0,0,0.4); padding: 2px; border: 1px solid var(--app-border);">
+        <div style="min-width: 0;">
+          <div class="fw-bold text-white small text-truncate">Xperia Z Ultra</div>
+          <span class="badge bg-primary" style="font-size: 10px;">togari / C6833</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-1">
+        <span class="small text-muted">SoC:</span>
+        <span class="small font-monospace">MSM8974 (S800)</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-1">
+        <span class="small text-muted">Arch:</span>
+        <span class="small font-monospace">armv7l (32-bit)</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <span class="small text-muted">RAM:</span>
+        <span class="small font-monospace">2 GB LPDDR3</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MAIN CONTENT
+       ======================================================================== -->
+  <main class="content">
+
+    <!-- Top Control Bar -->
+    <div class="top-control-bar">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Hardware Analysis Ready</span>
+        <span class="badge bg-secondary">Sony Xperia Z Ultra (C6802 / C6833 / C6806)</span>
+        <span class="badge bg-info text-dark">Linux Kernel 3.4 / Mainline 6.x</span>
+      </div>
+
+      <!-- Theme Selector Dropdown -->
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" 
+                type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-palette-fill text-primary"></i>
+          <span id="activeThemeLabel">Theme: AdminLTE Blue</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="themeDropdown">
+          <li><h6 class="dropdown-header">Dark Presets</h6></li>
+          <li><a class="dropdown-item active" href="javascript:void(0)" onclick="setTheme('adminlte-blue', 'assets/css/bootstrap.min.css', 'dark', 'AdminLTE Blue')"><i class="bi bi-circle-fill text-primary me-2"></i>AdminLTE Blue (Default)</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" onclick="setTheme('darkly', 'assets/css/bootstrap-darkly.min.css', 'dark', 'Darkly')"><i class="bi bi-circle-fill text-info me-2"></i>Darkly</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" onclick="setTheme('cyborg', 'assets/css/bootstrap-cyborg.min.css', 'dark', 'Cyborg')"><i class="bi bi-circle-fill text-danger me-2"></i>Cyborg High-Contrast</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" onclick="setTheme('pulse', 'assets/css/bootstrap-pulse.min.css', 'dark', 'Pulse')"><i class="bi bi-circle-fill text-warning me-2"></i>Pulse Purple</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" onclick="setTheme('emerald', 'assets/css/bootstrap.min.css', 'dark', 'Emerald Dark')"><i class="bi bi-circle-fill text-success me-2"></i>Emerald Green</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><h6 class="dropdown-header">Light Presets</h6></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" onclick="setTheme('flatly', 'assets/css/bootstrap-flatly.min.css', 'light', 'Flatly Light')"><i class="bi bi-circle-fill text-secondary me-2"></i>Flatly Clean Light</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner" id="overview">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+            <span class="code-pill">ARCHITECTURAL SPECIFICATION</span>
+            <span class="code-pill text-warning border-warning">QUALCOMM SNAPDRAGON 800</span>
+            <a href="#device-gallery" class="badge bg-info text-dark text-decoration-none"><i class="bi bi-images me-1"></i> 11 Product Photos</a>
+          </div>
+          <h2 class="display-6 fw-bold text-white mb-2">Transforming Xperia Z Ultra into an SBC</h2>
+          <p class="text-muted lead fs-6 mb-4">
+            An in-depth engineering assessment of turning the 2013 flagship <strong>Sony Xperia Z Ultra (<code class="text-info">togari</code>)</strong> 
+            into a headless Linux Single Board Computer (SBC). Covers driver stability, battery bypass, thermal regulation, 
+            and a technical comparison of <strong>7 distinct methods</strong> to run Linux.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="#comparison-matrix" class="btn btn-primary btn-sm"><i class="bi bi-table me-1"></i> View Comparison Matrix</a>
+            <a href="#device-gallery" class="btn btn-outline-info btn-sm"><i class="bi bi-images me-1"></i> Browse Photo Gallery</a>
+            <a href="#interactive-simulator" class="btn btn-outline-light btn-sm"><i class="bi bi-sliders me-1"></i> SBC Architecture Chooser</a>
+            <a href="#drivers" class="btn btn-outline-warning btn-sm"><i class="bi bi-cpu me-1"></i> Driver Challenges</a>
+          </div>
+          <!-- Quick Stat Chips -->
+          <div class="row g-2 pt-2 border-top border-secondary">
+            <div class="col-sm-4">
+              <div class="p-2 rounded bg-dark border border-secondary small">
+                <span class="text-muted d-block" style="font-size: 11px;"><i class="bi bi-lightning-charge text-warning"></i> Idle Power:</span>
+                <strong class="text-light">~1.2 – 2.1 W</strong>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-2 rounded bg-dark border border-secondary small">
+                <span class="text-muted d-block" style="font-size: 11px;"><i class="bi bi-shield-check text-success"></i> UPS Buffer:</span>
+                <strong class="text-success">3050 mAh Li-ion</strong>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-2 rounded bg-dark border border-secondary small">
+                <span class="text-muted d-block" style="font-size: 11px;"><i class="bi bi-display text-info"></i> Built-in Display:</span>
+                <strong class="text-info">6.44" 1080p IPS</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center">
+          <div class="hero-device-wrapper position-relative" onclick="openLightbox(0)" title="Click to view full photo in Lightbox">
+            <span class="gallery-card-badge"><i class="bi bi-zoom-in me-1"></i> Click to Zoom</span>
+            <span class="badge bg-dark border border-secondary position-absolute top-0 end-0 m-3 text-info">togari / C6833</span>
+            <img src="assets/images/xperia-z-ultra-main.jpg" alt="Sony Xperia Z Ultra togari" class="hero-device-img mb-2">
+            <div class="d-flex justify-content-center gap-1 flex-wrap mt-2">
+              <span class="badge bg-dark border border-secondary text-light small"><i class="bi bi-aspect-ratio text-info"></i> 6.44" Triluminos</span>
+              <span class="badge bg-dark border border-secondary text-light small"><i class="bi bi-arrows-collapse text-warning"></i> 6.5 mm Thin</span>
+              <span class="badge bg-dark border border-secondary text-light small"><i class="bi bi-water text-primary"></i> IP58 Proof</span>
+              <span class="badge bg-dark border border-secondary text-light small"><i class="bi bi-usb-symbol text-success"></i> 2-Pin Dock</span>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 11px;">
+              <i class="bi bi-camera me-1"></i> Digikala Official Imagery (DKP-20868)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Device & Deployment Progress Tracker -->
+    <section id="deployment-tracker" class="mb-5">
+      <div class="card border-primary shadow-sm" style="background: var(--app-bg-card); border-width: 2px;">
+        <div class="card-header d-flex justify-content-between align-items-center" style="background: var(--app-bg-card-inner); border-bottom: 1px solid var(--app-border);">
+          <div class="d-flex align-items-center gap-2">
+            <span class="spinner-grow spinner-grow-sm text-primary" role="status"></span>
+            <span class="fw-bold text-white"><i class="bi bi-broadcast me-1"></i> Live Hardware Deployment Tracker: Solution 1</span>
+          </div>
+          <span class="badge bg-primary">Step 1 of 5 in Progress</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <div class="p-3 rounded-2 bg-dark border border-secondary">
+                <div class="small text-muted mb-1">Target Device Model:</div>
+                <div class="fw-bold text-light font-monospace">Sony Xperia Z Ultra (C6833)</div>
+                <div class="small text-info mt-1"><i class="bi bi-usb-symbol"></i> VID:0FCE PID:519C</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-2 bg-dark border border-secondary">
+                <div class="small text-muted mb-1">Bootloader State:</div>
+                <div class="fw-bold text-success font-monospace">UNLOCKED (Verified)</div>
+                <div class="small text-success mt-1"><i class="bi bi-unlock-fill"></i> S1 Boot Flashing Enabled</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-2 bg-dark border border-secondary">
+                <div class="small text-muted mb-1">ADB / Recovery Status:</div>
+                <div class="fw-bold text-success font-monospace">TWRP 3.7.0 (uid=0 root)</div>
+                <div class="small text-success mt-1"><i class="bi bi-shield-check"></i> Permanent Root Shell Active</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded-2 bg-dark border border-secondary">
+                <div class="small text-muted mb-1">Stock Firmware Build:</div>
+                <div class="fw-bold text-info font-monospace">Android 5.1.1 (14.6.A.0.368)</div>
+                <div class="small text-success mt-1"><i class="bi bi-fingerprint"></i> IMEI: 357656052679410</div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="fw-bold text-white mb-2"><i class="bi bi-download me-1 text-info"></i> Pre-Downloaded Toolchain &amp; Assets</h6>
+          <div class="table-container mb-4">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Component / Asset</th>
+                  <th>Local Path</th>
+                  <th>Size</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Google Platform Tools</strong> (adb &amp; fastboot v37.0.1)</td>
+                  <td><code>tools/platform-tools/adb.exe</code></td>
+                  <td>7.6 MB</td>
+                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Verified Ready</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Alpine Linux armv7 Minirootfs</strong> (v3.20.3)</td>
+                  <td><code>downloads/alpine-minirootfs-3.20.3-armv7.tar.gz</code></td>
+                  <td>3.01 MB</td>
+                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Pushed to /sdcard/</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Official TWRP Recovery</strong> (togari v2.8.5.0)</td>
+                  <td><code>downloads/twrp-2.8.5.0-togari.img</code></td>
+                  <td>11.30 MB</td>
+                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Downloaded &amp; Verified</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h6 class="fw-bold text-white mb-2"><i class="bi bi-signpost-split me-1 text-primary"></i> Step-by-Step Execution Plan (User Approval Gated)</h6>
+          <div class="list-group">
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
+              <div>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 1 DONE</span>
+                <strong>Authorize USB Debugging on Phone Screen</strong>
+                <p class="small text-muted mb-0 mt-1">ADB authorized! Model: <code>C6833</code>, Build: <code>14.6.A.0.368 (Lollipop 5.1.1)</code>.</p>
+              </div>
+              <span class="badge bg-success">Completed</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
+              <div>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 2 DONE</span>
+                <strong>Fastboot Driver Configured &amp; IMEI Queried</strong>
+                <p class="small text-muted mb-0 mt-1">
+                  Fastboot connection verified (<code>EP7327JUJB fastboot</code>). Full IMEI extracted: <code>357656052679410</code>.
+                </p>
+              </div>
+              <span class="badge bg-success">Completed</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
+              <div>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 3 DONE</span>
+                <strong>Bootloader Verified Unlocked</strong>
+                <p class="small text-muted mb-0 mt-1">Confirmed on-device: <code>Bootloader unlocked: Yes</code>. Ready for TWRP recovery.</p>
+              </div>
+              <span class="badge bg-success">Completed</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
+              <div>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 4 DONE</span>
+                <strong>Flashed &amp; Booted TWRP 3.7.0 Recovery</strong>
+                <p class="small text-muted mb-0 mt-1">Booted into TWRP 3.7.0. Kernel: <code>Linux 3.4.113 armv7l</code>. Native Root <code>uid=0</code> active.</p>
+              </div>
+              <span class="badge bg-success">Completed</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
+              <div>
+                <span class="badge bg-warning text-dark me-2">ACTIVE STEP 5</span>
+                <strong>Deploy Alpine Linux Rootfs to /data/alpine</strong>
+                <p class="small text-muted mb-0 mt-1">
+                  Extract <code>alpine-minirootfs-3.20.3-armv7.tar.gz</code> into <code>/data/alpine</code> (11GB free storage), mount proc/sys/dev, and configure OpenSSH server.
+                </p>
+              </div>
+              <span class="spinner-border spinner-border-sm text-warning" role="status"></span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+              <div>
+                <span class="badge bg-secondary me-2">STEP 3</span>
+                <strong>Decide on Clean Base / Root Setup</strong>
+                <p class="small text-muted mb-0 mt-1">Confirm if clean LineageOS flash is required or if we configure Alpine directly.</p>
+              </div>
+              <span class="badge bg-secondary">Gated</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+              <div>
+                <span class="badge bg-secondary me-2">STEP 4</span>
+                <strong>Deploy Alpine Linux Minirootfs &amp; SSH Server</strong>
+                <p class="small text-muted mb-0 mt-1">Extract Alpine to internal storage, mount proc/sysfs/dev, and configure OpenSSH on port 22.</p>
+              </div>
+              <span class="badge bg-secondary">Gated</span>
+            </div>
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+              <div>
+                <span class="badge bg-secondary me-2">STEP 5</span>
+                <strong>Install 24/7 Power Limiter (ACC 65%) &amp; Auto-Boot Script</strong>
+                <p class="small text-muted mb-0 mt-1">Ensure the device auto-launches SSH and prevents battery swelling when plugged in 24/7.</p>
+              </div>
+              <span class="badge bg-secondary">Gated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Official Device Photo Gallery & Hardware Tour -->
+    <section id="device-gallery" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-images text-primary me-2"></i>Official Device Gallery &amp; Hardware Tour</h3>
+          <p class="text-muted small mb-0">High-resolution physical engineering photographs sourced from Digikala catalog (Product DKP-20868)</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <a href="https://www.digikala.com/product/dkp-20868/%DA%AF%D9%88%D8%B4%DB%8C-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D8%B3%D9%88%D9%86%DB%8C-%D8%A7%DA%A9%D8%B3%D9%BE%D8%B1%DB%8C%D8%A7-%D8%B2%D8%AF-%D8%A2%D9%84%D8%AA%D8%B1%D8%A7/" 
+             target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i> View on Digikala
+          </a>
+        </div>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="btn btn-sm btn-primary gallery-filter-btn active" onclick="filterGallery('all', this)">
+          <i class="bi bi-grid-fill me-1"></i> All Visuals (11)
+        </button>
+        <button class="btn btn-sm btn-outline-secondary gallery-filter-btn" onclick="filterGallery('display', this)">
+          <i class="bi bi-display me-1"></i> Display &amp; Console (3)
+        </button>
+        <button class="btn btn-sm btn-outline-secondary gallery-filter-btn" onclick="filterGallery('chassis', this)">
+          <i class="bi bi-phone me-1"></i> Chassis &amp; Profile (2)
+        </button>
+        <button class="btn btn-sm btn-outline-secondary gallery-filter-btn" onclick="filterGallery('ports', this)">
+          <i class="bi bi-usb-symbol me-1"></i> Magnetic Port &amp; Flaps (2)
+        </button>
+        <button class="btn btn-sm btn-outline-secondary gallery-filter-btn" onclick="filterGallery('durability', this)">
+          <i class="bi bi-shield-check me-1"></i> Durability &amp; In-Hand (4)
+        </button>
+      </div>
+
+      <!-- Photo Cards Grid -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3" id="galleryGrid">
+        
+        <!-- Image 0: Main Studio Overview -->
+        <div class="col gallery-item" data-category="display">
+          <div class="gallery-card" onclick="openLightbox(0)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-star-fill text-warning me-1"></i> Studio Overview</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-main.jpg" alt="Sony Xperia Z Ultra Dual-Sided View" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Dual-Sided Studio Render</h6>
+                <p>6.44" Triluminos 1080p display and scratch-resistant rear glass plate with Sony, Xperia, and NFC branding.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 1: 3D Isometric View -->
+        <div class="col gallery-item" data-category="chassis">
+          <div class="gallery-card" onclick="openLightbox(1)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-arrows-collapse text-info me-1"></i> 6.5mm Profile</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-1.jpg" alt="Xperia Z Ultra 3D Profile" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>3D Isometric View &amp; Button</h6>
+                <p>Iconic CNC aluminum power key, volume rocker, and razor-sharp 6.5 mm profile ideal for flat rack mounting.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 2: Perspective Profile & Sealed Flaps -->
+        <div class="col gallery-item" data-category="ports">
+          <div class="gallery-card" onclick="openLightbox(2)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-sd-card text-success me-1"></i> MicroSD Slot</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-2.jpg" alt="Xperia Z Ultra Sealed Ports" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Sealed Storage &amp; SIM Tray</h6>
+                <p>Waterproof rubber-gasket flap covering MicroSD storage expansion slot and Micro-SIM card bay.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 3: Direct Face Display -->
+        <div class="col gallery-item" data-category="display">
+          <div class="gallery-card" onclick="openLightbox(3)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-display text-warning me-1"></i> 1080p Screen</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-3.jpg" alt="Xperia Z Ultra Front Display" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Frontal 6.44" Full HD Display</h6>
+                <p>1920x1080 pixel density acts as a zero-cost built-in touch display for Linux diagnostic telemetry &amp; logs.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 4: Color Lineup -->
+        <div class="col gallery-item" data-category="chassis">
+          <div class="gallery-card" onclick="openLightbox(4)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-palette text-danger me-1"></i> OmniBalance</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-4.jpg" alt="Xperia Z Ultra Colors" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>OmniBalance Trio Lineup</h6>
+                <p>Crafted in Black, White, and Purple with dual tempered glass plates and a solid metallic skeleton frame.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 5: Water Splash Entry -->
+        <div class="col gallery-item" data-category="durability">
+          <div class="gallery-card" onclick="openLightbox(5)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-droplet-half text-primary me-1"></i> IP58 Ingress</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-5.jpg" alt="Xperia Z Ultra Water Entry" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>IP58 Water Entry Test</h6>
+                <p>Protected against high-pressure water jets and liquid ingress, surviving harsh embedded environments.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 6: Underwater Submersion -->
+        <div class="col gallery-item" data-category="durability">
+          <div class="gallery-card" onclick="openLightbox(6)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-water text-info me-1"></i> Submerged Ready</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-6.jpg" alt="Xperia Z Ultra Submerged" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Submerged Ingress Operation</h6>
+                <p>Operates underwater up to 1.5 meters for 30 minutes in freshwater with closed port flaps.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 7: Landscape Console Hold -->
+        <div class="col gallery-item" data-category="display">
+          <div class="gallery-card" onclick="openLightbox(7)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-terminal text-success me-1"></i> Console View</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-7.jpg" alt="Xperia Z Ultra Landscape Console" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Landscape Dual-Hand Console</h6>
+                <p>Optimal 16:9 widescreen form factor for live htop monitoring, Grafana dashboards, or XFCE desktop.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 8: Single-Hand Scale -->
+        <div class="col gallery-item" data-category="durability">
+          <div class="gallery-card" onclick="openLightbox(8)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-hand-index text-light me-1"></i> Form Factor</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-8.jpg" alt="Xperia Z Ultra Handheld Scale" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Ultra-Thin In-Hand Scale</h6>
+                <p>Weighs only 212 grams with a 6.5 mm profile; extremely slim for mounting inside server enclosures.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 9: Rear Glass & NFC -->
+        <div class="col gallery-item" data-category="durability">
+          <div class="gallery-card" onclick="openLightbox(9)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge"><i class="bi bi-broadcast text-warning me-1"></i> NFC &amp; Camera</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-9.jpg" alt="Xperia Z Ultra Rear NFC Plate" loading="lazy">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>Rear Glass, NFC &amp; 8MP Sensor</h6>
+                <p>Integrated NFC antenna loop for IoT badge scanning and 8-megapixel Exmor RS rear camera sensor.</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image 10: 2-Pin Magnetic Charging Port -->
+        <div class="col gallery-item" data-category="ports">
+          <div class="gallery-card border-primary shadow-sm" onclick="openLightbox(10)">
+            <div class="gallery-thumb-container">
+              <span class="gallery-card-badge bg-primary text-white"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> SBC Superpower</span>
+              <span class="gallery-zoom-badge"><i class="bi bi-zoom-in"></i></span>
+              <img src="assets/images/xperia-z-ultra-10.jpg" alt="Xperia Z Ultra 2-Pin Magnetic Port" loading="lazy" style="transform: rotate(-90deg) scale(0.9);">
+            </div>
+            <div class="gallery-card-info">
+              <div>
+                <h6>2-Pin Magnetic Port (Chassis Edge)</h6>
+                <p>Dedicated power port (+5V DC &amp; GND) allowing 24/7 charging while freeing Micro-USB for OTG peripherals!</p>
+              </div>
+              <div class="mt-2 text-primary small fw-semibold"><i class="bi bi-arrows-fullscreen me-1"></i> Inspect Image</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Hardware Specs & SBC Feasibility -->
+    <section id="hardware-specs" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-motherboard text-primary me-2"></i>Hardware Blueprint vs Raspberry Pi</h3>
+          <p class="text-muted small mb-0">How the Xperia Z Ultra measures up against standard maker SBCs</p>
+        </div>
+      </div>
+
+      <div class="table-container shadow-sm">
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Sony Xperia Z Ultra (togari)</th>
+              <th>Raspberry Pi 3 Model B</th>
+              <th>Engineering Impact for SBC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Processor (SoC)</strong></td>
+              <td>Qualcomm Snapdragon 800 MSM8974<br><span class="badge bg-secondary font-monospace">Quad-core 2.2 GHz Krait 400</span></td>
+              <td>Broadcom BCM2837<br><span class="badge bg-secondary font-monospace">Quad-core 1.2 GHz Cortex-A53</span></td>
+              <td><span class="text-success fw-bold"><i class="bi bi-check-lg"></i> Higher peak clock speed</span>, faster single-thread compile time.</td>
+            </tr>
+            <tr>
+              <td><strong>Architecture</strong></td>
+              <td><span class="badge bg-warning text-dark font-monospace">ARMv7-A (32-bit / armhf)</span></td>
+              <td><span class="badge bg-info text-dark font-monospace">ARMv8-A (64-bit / aarch64)</span></td>
+              <td><span class="text-danger fw-bold"><i class="bi bi-exclamation-triangle"></i> Bottleneck:</span> Modern Docker and Node.js v18+ drop 32-bit ARM.</td>
+            </tr>
+            <tr>
+              <td><strong>RAM Memory</strong></td>
+              <td><span class="badge bg-success font-monospace">2 GB LPDDR3</span></td>
+              <td><span class="badge bg-secondary font-monospace">1 GB LPDDR2</span></td>
+              <td><span class="text-success fw-bold"><i class="bi bi-check-lg"></i> Double the RAM!</span> Plenty of headroom for databases and web services.</td>
+            </tr>
+            <tr>
+              <td><strong>Onboard Storage</strong></td>
+              <td>16 GB eMMC 4.5 Flash + MicroSD Slot</td>
+              <td>MicroSD Slot Only</td>
+              <td><span class="text-success fw-bold"><i class="bi bi-check-lg"></i> Fast eMMC</span> eliminates the notorious SD card corruption of Pis.</td>
+            </tr>
+            <tr>
+              <td><strong>Display &amp; Input</strong></td>
+              <td>Built-in 6.44" 1080p LCD + Touchscreen</td>
+              <td>Requires external HDMI monitor</td>
+              <td><span class="text-success fw-bold"><i class="bi bi-check-lg"></i> Zero extra cost</span> for diagnostic screen, live log viewer, or clock.</td>
+            </tr>
+            <tr>
+              <td><strong>Power &amp; UPS</strong></td>
+              <td>Integrated 3050 mAh Li-ion battery</td>
+              <td>No UPS (brownouts cause sudden shutdown)</td>
+              <td><span class="text-success fw-bold"><i class="bi bi-check-lg"></i> Survives power cuts</span> for 4-8 hours seamlessly.</td>
+            </tr>
+            <tr>
+              <td><strong>Power Port Strategy</strong></td>
+              <td><strong>Sony 2-Pin Magnetic Charging Dock</strong></td>
+              <td>Micro-USB / USB-C</td>
+              <td><span class="badge bg-primary">Secret Weapon:</span> Powers via dock pins while leaving USB port free for OTG peripherals!</td>
+            </tr>
+            <tr>
+              <td><strong>Networking</strong></td>
+              <td>Dual-band Wi-Fi 802.11ac + Bluetooth 4.0</td>
+              <td>Single-band 802.11n Wi-Fi + Fast Ethernet</td>
+              <td>Fast 5GHz Wi-Fi; requires USB-to-Ethernet adapter for wired RJ45.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section: Master Comparison Matrix of 7 Ways -->
+    <section id="comparison-matrix" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Master Comparison: 7 Ways to Run Linux</h3>
+          <p class="text-muted small mb-0">Comprehensive evaluation across kernel architecture, driver stability, and 24/7 reliability</p>
+        </div>
+      </div>
+
+      <div class="table-container shadow-sm">
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th># Method</th>
+              <th>Kernel Base</th>
+              <th>Hardware Stability</th>
+              <th>Idle RAM Overhead</th>
+              <th>Root &amp; Sockets</th>
+              <th>24/7 SBC Rating</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>1. Android Kernel + Minimal Chroot</strong><br>
+                <small class="text-muted">LineageOS 14.1 base + Alpine/Debian</small>
+              </td>
+              <td>Sony 3.4 Kernel<br><span class="badge bg-secondary font-monospace">Factory Tuned</span></td>
+              <td><span class="badge bg-success">100% Stable</span><br><small class="text-muted">Full Wi-Fi/Power</small></td>
+              <td><span class="text-success fw-bold">~40 – 60 MB</span><br><small class="text-muted">No Google Apps</small></td>
+              <td><span class="badge bg-success">Full Root</span><br><small class="text-muted">Raw sockets &amp; ports</small></td>
+              <td><span class="text-warning">★★★★★</span><br><strong>9.8 / 10</strong></td>
+              <td><span class="badge bg-success">RECOMMENDED ⭐</span><br><small class="text-muted">Rock-solid headless server</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>2. postmarketOS (Native Mainline)</strong><br>
+                <small class="text-muted">Alpine Linux + Mainline Linux 6.x</small>
+              </td>
+              <td>Mainline Linux<br><span class="badge bg-warning text-dark font-monospace">Archived Port</span></td>
+              <td><span class="badge bg-warning text-dark">50% Quirky</span><br><small class="text-muted">Firmware blob dependent</small></td>
+              <td><span class="text-info fw-bold">~25 – 45 MB</span><br><small class="text-muted">Pure Alpine</small></td>
+              <td><span class="badge bg-success">Native Root</span><br><small class="text-muted">Systemd / OpenRC</small></td>
+              <td><span class="text-warning">★★★☆☆</span><br><strong>6.2 / 10</strong></td>
+              <td><span class="badge bg-warning text-dark">EXPERIMENTAL</span><br><small class="text-muted">Fun for hacking; Wi-Fi drops</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>3. Termux + PRoot Distro</strong><br>
+                <small class="text-muted">Zero-flash userspace emulation</small>
+              </td>
+              <td>Stock Android<br><span class="badge bg-secondary font-monospace">No unlock needed</span></td>
+              <td><span class="badge bg-success">100% Stable</span><br><small class="text-muted">OS handles drivers</small></td>
+              <td><span class="text-danger fw-bold">~350 – 500 MB</span><br><small class="text-muted">Android UI running</small></td>
+              <td><span class="badge bg-danger">Emulated Root</span><br><small class="text-muted">No low ports (&lt;1024)</small></td>
+              <td><span class="text-warning">★★★★☆</span><br><strong>7.5 / 10</strong></td>
+              <td><span class="badge bg-info text-dark">FASTEST START</span><br><small class="text-muted">Great if bootloader is locked</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>4. Linux Deploy (Loop Container)</strong><br>
+                <small class="text-muted">Mount ext4 image on SD/eMMC</small>
+              </td>
+              <td>Rooted Android<br><span class="badge bg-secondary font-monospace">Magisk / SuperSU</span></td>
+              <td><span class="badge bg-success">95% Stable</span><br><small class="text-muted">Vendor hardware layer</small></td>
+              <td><span class="text-warning fw-bold">~120 – 180 MB</span><br><small class="text-muted">Background Android</small></td>
+              <td><span class="badge bg-success">True Root</span><br><small class="text-muted">Dedicated filesystem</small></td>
+              <td><span class="text-warning">★★★★☆</span><br><strong>8.2 / 10</strong></td>
+              <td><span class="badge bg-primary">SOLID ALTERNATIVE</span><br><small class="text-muted">Easy GUI management</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>5. Ubuntu Touch (UBports / Halium)</strong><br>
+                <small class="text-muted">Canonical touch UI + Lomiri</small>
+              </td>
+              <td>Halium 5.1 / 7.1<br><span class="badge bg-secondary font-monospace">libhybris</span></td>
+              <td><span class="badge bg-danger">Archived / Broken</span><br><small class="text-muted">Legacy 2015 port</small></td>
+              <td><span class="text-danger fw-bold">~450 – 650 MB</span><br><small class="text-muted">Heavy graphics stack</small></td>
+              <td><span class="badge bg-success">Full Root</span><br><small class="text-muted">Read-write remount</small></td>
+              <td><span class="text-warning">★★☆☆☆</span><br><strong>3.5 / 10</strong></td>
+              <td><span class="badge bg-danger">NOT SUITABLE FOR SBC</span><br><small class="text-muted">Heavy touch UI, abandoned</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>6. Sailfish OS (Jolla Mer Linux)</strong><br>
+                <small class="text-muted">RPM-based GNU/Linux + Wayland</small>
+              </td>
+              <td>Hybris Kernel<br><span class="badge bg-secondary font-monospace">Mer Core</span></td>
+              <td><span class="badge bg-warning text-dark">65% Stable</span><br><small class="text-muted">Historic community build</small></td>
+              <td><span class="text-warning fw-bold">~250 – 350 MB</span><br><small class="text-muted">Lipstick compositor</small></td>
+              <td><span class="badge bg-success">Full Root</span><br><small class="text-muted">zypper / pkcon</small></td>
+              <td><span class="text-warning">★★★☆☆</span><br><strong>5.0 / 10</strong></td>
+              <td><span class="badge bg-secondary">HISTORICAL</span><br><small class="text-muted">Great UI, high overhead for SBC</small></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>7. Halium + Debian/Arch Minimal</strong><br>
+                <small class="text-muted">Pure systemd + glibc via libhybris</small>
+              </td>
+              <td>Android 7.1 Kernel<br><span class="badge bg-secondary font-monospace">Halium 7.1</span></td>
+              <td><span class="badge bg-info text-dark">80% Stable</span><br><small class="text-muted">Requires manual setup</small></td>
+              <td><span class="text-success fw-bold">~70 – 90 MB</span><br><small class="text-muted">Headless systemd</small></td>
+              <td><span class="badge bg-success">Full Root</span><br><small class="text-muted">Raw glibc</small></td>
+              <td><span class="text-warning">★★★★☆</span><br><strong>7.9 / 10</strong></td>
+              <td><span class="badge bg-purple">ADVANCED MAKER</span><br><small class="text-muted">Steep learning curve to build</small></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section: Deep Dive into the 7 Methods -->
+    <section class="mb-5">
+      <h3 class="fw-bold mb-3"><i class="bi bi-layers-fill text-primary me-2"></i>Deep Dive: Individual Method Architecture</h3>
+
+      <div class="row g-4">
+        <!-- Method 1 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-success bg-opacity-25 text-success">
+                <i class="bi bi-trophy-fill"></i>
+              </div>
+              <span class="badge bg-success">RECOMMENDED FOR 24/7 SBC</span>
+            </div>
+            <h4>Way 1: Android Kernel + Headless Linux Chroot</h4>
+            <p>
+              Flash a stripped-down, ultra-minimal Android 7.1 base (LineageOS without GApps), strip the GUI, 
+              and mount an **Alpine Linux or Debian Minimal** rootfs directly into a Linux chroot. 
+              The Android kernel provides 100% factory-tuned power management, Wi-Fi driver stability, and thermal throttling, 
+              while Alpine provides an ultra-lightweight (~15 MB RAM) native Linux environment with zero emulation penalty.
+            </p>
+            <div class="terminal-box mb-3">
+              <button class="btn btn-dark btn-sm copy-btn" onclick="copyText('# Auto-start Alpine Chroot on Boot\nmount -t proc proc /data/alpine/proc\nmount -t sysfs sys /data/alpine/sys\nmount -o bind /dev /data/alpine/dev\nchroot /data/alpine /usr/sbin/sshd -D &')"><i class="bi bi-clipboard"></i></button>
+              <span class="text-muted"># Boot Script (init.d / Magisk)</span><br>
+              mount -t proc proc /data/alpine/proc<br>
+              mount -t sysfs sys /data/alpine/sys<br>
+              mount -o bind /dev /data/alpine/dev<br>
+              chroot /data/alpine /usr/sbin/sshd -D &
+            </div>
+            <div class="tech-pill-container">
+              <span class="tech-pill">Alpine 3.20</span>
+              <span class="tech-pill">Debian 12 armhf</span>
+              <span class="tech-pill">RAM: 15-40 MB</span>
+              <span class="tech-pill">Full Root</span>
+              <span class="tech-pill">Zero CPU Virtualization</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method 2 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-2">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-primary bg-opacity-25 text-primary">
+                <i class="bi bi-terminal-fill"></i>
+              </div>
+              <span class="badge bg-warning text-dark">PURIST HACKER ROUTE</span>
+            </div>
+            <h4>Way 2: postmarketOS (Native Mainline Linux)</h4>
+            <p>
+              Boots real mainline Linux kernel directly on the hardware with OpenRC or Systemd, completely bypassing Android. 
+              Device codename is <code class="code-pill">sony-togari</code>. 
+              While it offers a pure Linux OS without Android remnants, the port has been moved to the archived category. 
+              Users must supply proprietary Qualcomm firmware blobs for Wi-Fi (<code class="text-info">wcn36xx</code>), 
+              and battery charging behavior requires careful monitoring under continuous load.
+            </p>
+            <div class="terminal-box mb-3">
+              <button class="btn btn-dark btn-sm copy-btn" onclick="copyText('pmbootstrap init\n# Device vendor: sony\n# Device codename: togari\npmbootstrap install\npmbootstrap flasher flash_kernel\npmbootstrap flasher flash_rootfs')"><i class="bi bi-clipboard"></i></button>
+              <span class="text-muted"># pmbootstrap Deployment</span><br>
+              pmbootstrap init --device=sony-togari<br>
+              pmbootstrap install<br>
+              pmbootstrap flasher flash_kernel<br>
+              pmbootstrap flasher flash_rootfs
+            </div>
+            <div class="tech-pill-container">
+              <span class="tech-pill">Linux 6.x</span>
+              <span class="tech-pill">pmbootstrap</span>
+              <span class="tech-pill">No Android</span>
+              <span class="tech-pill">OpenRC</span>
+              <span class="tech-pill">Mesa Freedreno</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method 3 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-info bg-opacity-25 text-info">
+                <i class="bi bi-phone-fill"></i>
+              </div>
+              <span class="badge bg-info text-dark">NO UNLOCK NEEDED</span>
+            </div>
+            <h4>Way 3: Termux + PRoot Distro</h4>
+            <p>
+              The safest, zero-risk method. Install the latest Termux APK (via F-Droid or GitHub releases), 
+              then use <code class="code-pill">proot-distro</code> to pull Debian, Ubuntu, or Alpine. 
+              Runs in userspace using ptrace system-call hooking. 
+              Ideal if your bootloader cannot be unlocked or you want to test server workloads without wiping your phone.
+            </p>
+            <div class="terminal-box mb-3">
+              <button class="btn btn-dark btn-sm copy-btn" onclick="copyText('pkg update && pkg install proot-distro\nproot-distro install debian\nproot-distro login debian\napt update && apt install openssh-server -y')"><i class="bi bi-clipboard"></i></button>
+              <span class="text-muted"># Inside Termux</span><br>
+              pkg install proot-distro<br>
+              proot-distro install debian<br>
+              proot-distro login debian<br>
+              apt update && apt install openssh-server
+            </div>
+            <div class="tech-pill-container">
+              <span class="tech-pill">Userspace Emulation</span>
+              <span class="tech-pill">Safe / Zero Brick</span>
+              <span class="tech-pill">Port &gt; 1024</span>
+              <span class="tech-pill">Termux:Boot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method 4 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-warning bg-opacity-25 text-warning">
+                <i class="bi bi-hdd-network-fill"></i>
+              </div>
+              <span class="badge bg-primary">LOOPBACK IMAGE</span>
+            </div>
+            <h4>Way 4: Linux Deploy (Dedicated Ext4 Loop Container)</h4>
+            <p>
+              Requires root access on the Android host (Magisk). Creates an isolated 4GB–16GB <code class="code-pill">linux.img</code> 
+              file or targets a dedicated partition on the MicroSD card. 
+              Installs a true Debian/Ubuntu armhf rootfs with real Linux root permissions, capable of binding port 80/443 directly. 
+              Provides a convenient Android GUI application to start, stop, and configure SSH and VNC daemons.
+            </p>
+            <div class="terminal-box mb-3">
+              <button class="btn btn-dark btn-sm copy-btn" onclick="copyText('# Target Architecture: armhf\n# Distribution: Debian (Bookworm)\n# Installation type: File Loop / Storage: /data/linux.img\n# Init system: sysv / SSH Enabled on Port 22')"><i class="bi bi-clipboard"></i></button>
+              <span class="text-muted"># Linux Deploy Configuration</span><br>
+              Distro: Debian (Bookworm) / Arch: armhf<br>
+              Container: /data/linux.img (Ext4, 8192 MB)<br>
+              Services: SSH (port 22) + OpenRC init
+            </div>
+            <div class="tech-pill-container">
+              <span class="tech-pill">True Root Sockets</span>
+              <span class="tech-pill">MicroSD Support</span>
+              <span class="tech-pill">SSH &amp; VNC</span>
+              <span class="tech-pill">Low Maintenance</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method 5 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-5">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-danger bg-opacity-25 text-danger">
+                <i class="bi bi-ubuntu"></i>
+              </div>
+              <span class="badge bg-danger">ARCHIVED PROJECT</span>
+            </div>
+            <h4>Way 5: Ubuntu Touch (Canonical / UBports Community)</h4>
+            <p>
+              In 2014–2016, community developers built early Ubuntu Touch preview images for Xperia Z Ultra using CyanogenMod 11/12 HAL. 
+              While it proved that Ubuntu Touch could boot on the 6.44-inch screen, modern UBports dropped support for 32-bit MSM8974. 
+              The graphical Lomiri interface consumes 400MB+ of RAM and offers little advantage for headless SBC tasks.
+            </p>
+            <div class="tech-pill-container">
+              <span class="tech-pill">Ubuntu 15.04/16.04</span>
+              <span class="tech-pill">Lomiri UI</span>
+              <span class="tech-pill">Heavy RAM usage</span>
+              <span class="tech-pill">Historical Only</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method 6 & 7 Card -->
+        <div class="col-lg-6">
+          <div class="feature-card" id="way-6">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="feature-icon-wrapper bg-purple bg-opacity-25 text-purple">
+                <i class="bi bi-gear-wide-connected"></i>
+              </div>
+              <span class="badge bg-secondary">SPECIALIZED</span>
+            </div>
+            <h4>Way 6 &amp; 7: Sailfish OS &amp; Halium Debian Core</h4>
+            <p>
+              <strong>Way 6 (Sailfish OS):</strong> A full GNU/Linux distribution running Wayland, Qt/QML, and RPM packaging via libhybris. 
+              Highly responsive touchscreen UI, but unnecessary complexity for an SBC.<br><br>
+              <strong>Way 7 (Halium Debian Minimal):</strong> Halium strips the Android UI and connects a standard Debian systemd userland 
+              to Android kernel drivers via <code class="code-pill">libhybris</code>. Powerful, but requires building and flashing custom boot images manually.
+            </p>
+            <div class="tech-pill-container">
+              <span class="tech-pill">Sailfish / Mer</span>
+              <span class="tech-pill">Halium 7.1</span>
+              <span class="tech-pill">systemd glibc</span>
+              <span class="tech-pill">libhybris</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Driver Challenges Breakdown -->
+    <section id="drivers" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-tools text-warning me-2"></i>Hardware Driver Analysis &amp; Mitigation</h3>
+          <p class="text-muted small mb-0">Why pure mainline Linux is tricky on Qualcomm Snapdragon 800 and how to fix it</p>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-wifi text-info fs-5"></i>
+              <h5 class="mb-0 fs-6 fw-bold">Wi-Fi (WCN3680)</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Requires Qualcomm firmware files (<code class="text-info">wlan/prima/WCNSS_qcom_wlan_nv.bin</code>). 
+              In pure Linux, the driver <code class="text-light">wcn36xx</code> can enter sleep disconnects.
+            </p>
+            <div class="badge bg-success bg-opacity-25 text-success border border-success">
+              Fix: Disable power_save &amp; watchdog cron
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-battery-charging text-danger fs-5"></i>
+              <h5 class="mb-0 fs-6 fw-bold">PM8941 PMIC &amp; Charger</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Controls battery fuel-gauge and USB VBUS charging currents. 
+              Mainline Linux drivers can fail to negotiate full 1.5A/2A charging rates, causing battery drain while plugged in.
+            </p>
+            <div class="badge bg-warning bg-opacity-25 text-warning border border-warning">
+              Fix: Android kernel base or manual sysfs override
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-thermometer-high text-warning fs-5"></i>
+              <h5 class="mb-0 fs-6 fw-bold">Thermal Throttling</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Krait 400 cores get very hot under continuous workloads. 
+              Without thermal daemons, CPU either throttles permanently down to 300MHz or causes thermal shutdowns.
+            </p>
+            <div class="badge bg-info bg-opacity-25 text-info border border-info">
+              Fix: Limit max clock to 1.7 GHz via cpufreq
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: 24/7 Power, Battery Care & Magnetic Dock Pinout -->
+    <section id="power-acc" class="mb-5">
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="feature-card">
+            <h4 class="fw-bold mb-3"><i class="bi bi-battery-half text-success me-2"></i>24/7 Battery Protection Strategy (ACC)</h4>
+            <p class="text-muted small">
+              If an old lithium-ion battery remains plugged into a charger 24/7 at 100% capacity and elevated temperatures, 
+              it will degrade rapidly and risk swelling. 
+              We solve this using **Advanced Charging Controller (ACC)** via Linux sysfs.
+            </p>
+            <div class="terminal-box mb-3">
+              <button class="btn btn-dark btn-sm copy-btn" onclick="copyText('# Battery Charge Limiter (Cap at 65%)\nacc 65 60\n# Stops charging when battery hits 65%, resumes at 60%')"><i class="bi bi-clipboard"></i></button>
+              <span class="text-muted"># ACC Shell Configuration</span><br>
+              acc 65 60<br>
+              <span class="text-muted"># Or direct kernel sysfs write:</span><br>
+              echo 0 &gt; /sys/class/power_supply/battery/charging_enabled
+            </div>
+            <div class="alert alert-dark border-secondary p-3 mb-0 small">
+              <i class="bi bi-shield-check text-success me-1"></i>
+              <strong>Battery acting as a true UPS:</strong> Capping capacity at 65% extends cell life indefinitely 
+              while keeping over 2000 mAh available to bridge sudden household blackouts.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6" id="dock-pinout">
+          <div class="feature-card">
+            <h4 class="fw-bold mb-3"><i class="bi bi-usb-symbol text-primary me-2"></i>Magnetic Dock Charging + USB OTG</h4>
+            <p class="text-muted small">
+              Normal phones share the Micro-USB port for both charging and peripherals. 
+              The Xperia Z Ultra features a proprietary **2-pin magnetic charging port** on its left edge. 
+              This allows simultaneous power delivery while keeping the Micro-USB port available for USB OTG storage!
+            </p>
+            <!-- Hardware Photo Callout -->
+            <div class="p-2 mb-3 rounded-2 bg-dark border border-secondary text-center position-relative" style="cursor: pointer;" onclick="openLightbox(10)" title="Click to view full photo">
+              <span class="badge bg-primary position-absolute top-0 end-0 m-2"><i class="bi bi-zoom-in me-1"></i> Zoom Hardware</span>
+              <img src="assets/images/xperia-z-ultra-10.jpg" alt="Xperia Z Ultra Magnetic Dock Hardware Port" class="img-fluid rounded" style="max-height: 70px; transform: rotate(-90deg); margin: 28px auto; display: block; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));">
+              <div class="small text-info mt-1"><i class="bi bi-crosshair me-1"></i> Actual Left Edge: Center recessed gold-plated 2-pin magnetic contacts</div>
+            </div>
+            <div class="p-3 rounded-2 bg-dark border border-secondary mb-3 font-monospace small">
+              <div class="text-warning mb-1">Sony Xperia Z Ultra Left-Side Magnetic Port:</div>
+              <div class="text-light">[ Pin 1: +5V DC (Top) ] ====== [ Pin 2: GND (Bottom) ]</div>
+              <div class="text-muted mt-2">Allows continuous 5V/1.5A power supply while Micro-USB port is connected to:</div>
+              <div class="text-info mt-1">✔ USB-to-Ethernet RJ45 Adapter &nbsp;|&nbsp; ✔ External SSD / Flash Drive</div>
+            </div>
+            <div class="alert alert-dark border-secondary p-3 mb-0 small">
+              <i class="bi bi-lightbulb-fill text-warning me-1"></i>
+              <strong>Pro Tip:</strong> Buy a cheap $3 Sony magnetic charging cable on AliExpress/Amazon. 
+              Connect it to 5V power, and your Micro-USB port becomes a dedicated high-speed peripheral bus!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Interactive Architecture Chooser -->
+    <section id="interactive-simulator" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-sliders text-info me-2"></i>Interactive Architecture Chooser &amp; Workload Sizer</h3>
+          <p class="text-muted small mb-0">Select your intended use-case to get an instant tailored recommendation and configuration</p>
+        </div>
+      </div>
+
+      <div class="mockup-window">
+        <div class="mockup-header-bar">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-info text-dark fw-bold">DECISION ENGINE</span>
+            <span class="text-light small">Sony Xperia Z Ultra (togari)</span>
+          </div>
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-outline-light active sim-btn" onclick="runSim('sbc', this)">Headless 24/7 Home SBC</button>
+            <button type="button" class="btn btn-outline-light sim-btn" onclick="runSim('docker', this)">Microservices &amp; Python</button>
+            <button type="button" class="btn btn-outline-light sim-btn" onclick="runSim('desktop', this)">XFCE / GUI Desktop</button>
+            <button type="button" class="btn btn-outline-light sim-btn" onclick="runSim('safe', this)">Locked Bootloader (No Flashing)</button>
+          </div>
+        </div>
+
+        <div class="mockup-body" id="simOutput">
+          <!-- Content dynamically rendered via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Fastboot & Flashing Playbook -->
+    <section id="playbook" class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-terminal-fill text-success me-2"></i>Zero-to-Hero Flashing &amp; Deployment Playbook</h3>
+          <p class="text-muted small mb-0">Step-by-step CLI commands executed from the PC terminal</p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="p-3 rounded-3 h-100" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-primary">Phase 1</span>
+              <h5 class="mb-0 fs-6 fw-bold">Fastboot &amp; Unlock</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Power off phone. Hold <strong>Volume Up</strong> and plug in USB cable. 
+              The notification LED will light up solid <strong>BLUE</strong>.
+            </p>
+            <div class="terminal-box">
+              <span class="text-muted"># Verify Fastboot</span><br>
+              fastboot devices<br>
+              <span class="text-muted"># Unlock Bootloader</span><br>
+              fastboot oem unlock 0x&lt;KEY&gt;
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="p-3 rounded-3 h-100" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-success">Phase 2</span>
+              <h5 class="mb-0 fs-6 fw-bold">Flash Recovery &amp; Base</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Flash custom recovery (TWRP) and minimal LineageOS base without Google Play Services.
+            </p>
+            <div class="terminal-box">
+              <span class="text-muted"># Flash Recovery</span><br>
+              fastboot flash boot twrp-togari.img<br>
+              fastboot reboot<br>
+              <span class="text-muted"># Flash ROM via Sideload</span><br>
+              adb sideload lineage-14.1.zip
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="p-3 rounded-3 h-100" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-info text-dark">Phase 3</span>
+              <h5 class="mb-0 fs-6 fw-bold">Deploy Alpine / Debian</h5>
+            </div>
+            <p class="small text-muted mb-2">
+              Extract rootfs to <code class="text-info">/data/linux</code>, mount proc/sys/dev, and launch OpenSSH daemon.
+            </p>
+            <div class="terminal-box">
+              <span class="text-muted"># Push Rootfs</span><br>
+              adb push alpine-minirootfs.tar.gz /data/<br>
+              adb shell "mkdir /data/alpine"<br>
+              adb shell "tar -xzf /data/alpine-*.tar.gz -C /data/alpine"
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-4 mt-5 border-top border-secondary text-muted small d-flex justify-content-between align-items-center">
+      <div>
+        <strong>Sony Xperia Z Ultra (togari) Linux SBC Specification</strong> — Generated for Project Workstation
+      </div>
+      <div>
+        Snapdragon 800 (MSM8974) &bull; armv7l Architecture &bull; 2GB RAM
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ========================================================================
+       LIGHTBOX MODAL FOR FULL-RESOLUTION PRODUCT VISUALS
+       ======================================================================== -->
+  <div class="modal fade" id="lightboxModal" tabindex="-1" aria-labelledby="lightboxTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content lightbox-modal-content">
+        <div class="modal-header border-secondary" style="background: var(--app-bg-card-inner);">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary" id="lightboxBadge">Studio Overview</span>
+            <h5 class="modal-title fs-6 fw-bold text-white mb-0" id="lightboxTitle">Xperia Z Ultra Visual</h5>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-dark border border-secondary text-info font-monospace" id="lightboxCounter">1 / 11</span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="modal-body p-0">
+          <div class="lightbox-img-stage position-relative">
+            <button class="btn btn-dark btn-sm position-absolute start-0 top-50 translate-middle-y ms-3 shadow border-secondary rounded-circle" 
+                    onclick="prevLightboxImg()" title="Previous (Left Arrow)" style="z-index: 10; width: 40px; height: 40px; opacity: 0.85;">
+              <i class="bi bi-chevron-left fs-5"></i>
+            </button>
+            <img src="" id="lightboxImg" alt="Sony Xperia Z Ultra" class="img-fluid">
+            <button class="btn btn-dark btn-sm position-absolute end-0 top-50 translate-middle-y me-3 shadow border-secondary rounded-circle" 
+                    onclick="nextLightboxImg()" title="Next (Right Arrow)" style="z-index: 10; width: 40px; height: 40px; opacity: 0.85;">
+              <i class="bi bi-chevron-right fs-5"></i>
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between align-items-center border-secondary" style="background: var(--app-bg-card-inner);">
+          <div class="small text-muted text-start" style="max-width: 65%;">
+            <p class="mb-0 text-light fw-medium" id="lightboxDesc">Description goes here</p>
+            <span class="text-secondary" style="font-size: 11px;"><i class="bi bi-keyboard me-1"></i>Use &larr; / &rarr; keys or buttons to navigate</span>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="#" id="lightboxDigikalaLink" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm">
+              <i class="bi bi-box-arrow-up-right me-1"></i> Digikala Product
+            </a>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JavaScript Bundle -->
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // =========================================================================
+    // Theme Switcher & LocalStorage Persistence (Matches AppService Pattern)
+    // =========================================================================
+    function setTheme(themeName, cssFile, bsTheme, label) {
+      document.getElementById('bootstrap-theme-link').setAttribute('href', cssFile);
+      document.documentElement.setAttribute('data-theme', themeName);
+      document.documentElement.setAttribute('data-bs-theme', bsTheme);
+      document.getElementById('activeThemeLabel').innerText = 'Theme: ' + label;
+
+      document.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('active'));
+      if (window.event && window.event.target) {
+        const btn = window.event.target.closest('.dropdown-item');
+        if (btn) btn.classList.add('active');
+      }
+      localStorage.setItem('xperia_theme', JSON.stringify({ themeName, cssFile, bsTheme, label }));
+    }
+
+    // Restore Saved Theme
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('xperia_theme');
+      if (saved) {
+        try {
+          const cfg = JSON.parse(saved);
+          setTheme(cfg.themeName, cfg.cssFile, cfg.bsTheme, cfg.label);
+        } catch (e) {
+          console.warn('Could not restore saved theme:', e);
+        }
+      }
+      // Initialize simulator
+      runSim('sbc');
+    });
+
+    // Sidebar Live Filter
+    function filterSidebar() {
+      const query = document.getElementById('featureSearch').value.toLowerCase();
+      document.querySelectorAll('.nav-list li').forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(query) ? '' : 'none';
+      });
+    }
+
+    // Copy Helper
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        alert('Copied to clipboard: \n' + txt);
+      });
+    }
+
+    // =========================================================================
+    // Interactive Simulator / Architecture Chooser
+    // =========================================================================
+    const simData = {
+      sbc: {
+        title: "Way 1: Android Kernel + Alpine Linux Headless Chroot",
+        badge: "IDEAL FOR 24/7 HOME SERVER",
+        badgeClass: "bg-success",
+        ramUsage: "22 MB idle (Linux) + 45 MB (stripped Android kernel) = ~67 MB total",
+        freeRam: "1,933 MB available for user services",
+        stability: "100% — Zero Wi-Fi drops, full battery management, full thermal throttling.",
+        recommendedServices: ["Pi-hole / AdGuard Home DNS", "Mosquitto MQTT Broker", "Home Assistant Core (Python)", "Nginx / Caddy Web Server", "WireGuard / Tailscale VPN Node", "Syncthing File Sync"],
+        installCmd: `adb shell\nsu\n# Create directory and extract Alpine minirootfs\nmkdir -p /data/alpine\ntar -xpf /sdcard/alpine-minirootfs-3.20.0-armhf.tar.gz -C /data/alpine\n\n# Configure DNS & Auto-start script\necho "nameserver 1.1.1.1" > /data/alpine/etc/resolv.conf\nchroot /data/alpine /bin/sh -c "apk update && apk add openssh python3 py3-pip"\nchroot /data/alpine /usr/sbin/sshd`
+      },
+      docker: {
+        title: "Way 4 / Way 1: Debian Minimal Chroot (Full apt & build tools)",
+        badge: "DEVELOPMENT & SCRIPTING",
+        badgeClass: "bg-primary",
+        ramUsage: "45 MB idle (Linux) + 50 MB (Android) = ~95 MB total",
+        freeRam: "1,905 MB available for compilation and runtimes",
+        stability: "98% — Full GNU C Library (glibc), standard systemd/sysv compatibility.",
+        recommendedServices: ["Python 3.11 Microservices", "FastAPI / Flask", "PostgreSQL / SQLite", "Git Server (Gitea / Forgejo)", "Redis In-Memory Cache", "Rust / C++ Compilers"],
+        installCmd: `apt update && apt install -y build-essential python3-venv git curl libffi-dev\n# Notice: Modern Docker Engine has dropped 32-bit ARM (armhf).\n# Run your services directly as system services or virtualenvs instead!`
+      },
+      desktop: {
+        title: "Way 1 + XFCE4 / Termux:X11 (On-Screen Touch Desktop)",
+        badge: "TABLET WORKSTATION",
+        badgeClass: "bg-info text-dark",
+        ramUsage: "180 MB – 260 MB with XFCE desktop loaded",
+        freeRam: "1,740 MB available",
+        stability: "90% — Full 1080p hardware accelerated rendering using Adreno 330 GPU.",
+        recommendedServices: ["Lightweight XFCE Desktop", "Terminal Emulator on 6.44-inch screen", "Geany / Micro Code Editor", "Dillo / Midori Web Browser", "VNC Remote Display"],
+        installCmd: `apt install -y xfce4 xfce4-terminal tightvncserver\nvncserver :1 -geometry 1920x1080 -depth 24\n# Connect locally via Android VNC Viewer app or over Wi-Fi from PC!`
+      },
+      safe: {
+        title: "Way 3: Termux + PRoot Distro (Zero Flashing / Locked Phone)",
+        badge: "NO BOOTLOADER UNLOCK REQUIRED",
+        badgeClass: "bg-warning text-dark",
+        ramUsage: "~350 MB – 450 MB (due to full Android GUI running in background)",
+        freeRam: "1,550 MB available",
+        stability: "85% — Android aggressive battery saver may sleep Termux unless whitelisted.",
+        recommendedServices: ["Local SSH server (Port 8022)", "Python Scripts & Bots", "Node.js (v16 LTS)", "Static File Server", "Testing before unlocking"],
+        installCmd: `pkg update && pkg install proot-distro\nproot-distro install debian\nproot-distro login debian\n# Disable battery optimization in Android Settings -> Battery!`
+      }
+    };
+
+    function runSim(key, btn) {
+      if (btn) {
+        document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+
+      const item = simData[key];
+      const container = document.getElementById('simOutput');
+      
+      const servicesPills = item.recommendedServices.map(s => 
+        `<span class="badge bg-dark border border-secondary text-light p-2"><i class="bi bi-check2 text-success me-1"></i>${s}</span>`
+      ).join(' ');
+
+      container.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center pb-3 mb-3 border-bottom border-secondary">
+          <div>
+            <h4 class="text-white mb-1">${item.title}</h4>
+            <span class="small text-muted">Architectural Match Analysis</span>
+          </div>
+          <span class="badge ${item.badgeClass} fs-6">${item.badge}</span>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="p-3 rounded-2 bg-dark border border-secondary">
+              <div class="small text-muted mb-1"><i class="bi bi-memory text-info"></i> Estimated RAM Footprint:</div>
+              <div class="text-light fw-bold font-monospace">${item.ramUsage}</div>
+              <div class="small text-success mt-1"><i class="bi bi-arrow-up-circle"></i> ${item.freeRam}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-2 bg-dark border border-secondary">
+              <div class="small text-muted mb-1"><i class="bi bi-shield-check text-success"></i> Real-world Hardware Stability:</div>
+              <div class="text-light fw-semibold">${item.stability}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="small text-muted text-uppercase fw-bold mb-2">Recommended Workloads for this Configuration:</div>
+          <div class="d-flex flex-wrap gap-2">
+            ${servicesPills}
+          </div>
+        </div>
+
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small text-muted text-uppercase fw-bold">Bootstrap Command Sequence:</span>
+            <button class="btn btn-outline-info btn-sm py-0 px-2" onclick="copyText(document.getElementById('simCmd').innerText)"><i class="bi bi-clipboard"></i> Copy</button>
+          </div>
+          <div class="terminal-box" id="simCmd">${item.installCmd}</div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // Digikala Hardware Gallery & Lightbox Controller
+    // =========================================================================
+    const galleryImages = [
+      {
+        src: "assets/images/xperia-z-ultra-main.jpg",
+        title: "Dual-Sided Studio Render",
+        desc: "6.44\" Full HD Triluminos LCD and scratch-resistant rear glass plate with Sony, Xperia, and NFC branding.",
+        category: "display",
+        badge: "Studio Overview"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-1.jpg",
+        title: "3D Isometric View & Aluminum Button",
+        desc: "Iconic CNC aluminum power key, volume rocker, and razor-sharp 6.5 mm profile ideal for flat rack mounting.",
+        category: "chassis",
+        badge: "6.5mm Profile"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-2.jpg",
+        title: "Sealed Storage & SIM Tray",
+        desc: "Waterproof rubber-gasket flap covering MicroSD storage expansion slot and Micro-SIM card bay.",
+        category: "ports",
+        badge: "MicroSD Slot"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-3.jpg",
+        title: "Frontal 6.44\" Full HD Display",
+        desc: "1920x1080 pixel density acts as a zero-cost built-in touch display for Linux diagnostic telemetry & logs.",
+        category: "display",
+        badge: "1080p Screen"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-4.jpg",
+        title: "OmniBalance Trio Lineup",
+        desc: "Crafted in Black, White, and Purple with dual tempered glass plates and a solid metallic skeleton frame.",
+        category: "chassis",
+        badge: "OmniBalance"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-5.jpg",
+        title: "IP58 Water Entry Test",
+        desc: "Protected against high-pressure water jets and liquid ingress, surviving harsh embedded environments.",
+        category: "durability",
+        badge: "IP58 Ingress"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-6.jpg",
+        title: "Submerged Ingress Operation",
+        desc: "Operates underwater up to 1.5 meters for 30 minutes in freshwater with closed port flaps.",
+        category: "durability",
+        badge: "Submerged Ready"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-7.jpg",
+        title: "Landscape Dual-Hand Console",
+        desc: "Optimal 16:9 widescreen form factor for live htop monitoring, Grafana dashboards, or XFCE desktop.",
+        category: "display",
+        badge: "Console View"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-8.jpg",
+        title: "Ultra-Thin In-Hand Scale",
+        desc: "Weighs only 212 grams with a 6.5 mm profile; extremely slim for mounting inside server enclosures.",
+        category: "durability",
+        badge: "Form Factor"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-9.jpg",
+        title: "Rear Glass, NFC & 8MP Sensor",
+        desc: "Integrated NFC antenna loop for IoT badge scanning and 8-megapixel Exmor RS rear camera sensor.",
+        category: "durability",
+        badge: "NFC & Camera"
+      },
+      {
+        src: "assets/images/xperia-z-ultra-10.jpg",
+        title: "2-Pin Magnetic Charging Port (Chassis Edge)",
+        desc: "Dedicated power port (+5V DC & GND) allowing 24/7 charging while freeing Micro-USB for OTG peripherals!",
+        category: "ports",
+        badge: "Magnetic Dock Pin"
+      }
+    ];
+
+    let currentLightboxIdx = 0;
+
+    function openLightbox(idx) {
+      currentLightboxIdx = idx;
+      updateLightboxContent();
+      const modalEl = document.getElementById('lightboxModal');
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+
+    function updateLightboxContent() {
+      const item = galleryImages[currentLightboxIdx];
+      if (!item) return;
+      document.getElementById('lightboxImg').src = item.src;
+      document.getElementById('lightboxTitle').innerText = item.title;
+      document.getElementById('lightboxDesc').innerText = item.desc;
+      document.getElementById('lightboxCounter').innerText = `${currentLightboxIdx + 1} / ${galleryImages.length}`;
+      document.getElementById('lightboxBadge').innerText = item.badge;
+      document.getElementById('lightboxDigikalaLink').href = "https://www.digikala.com/product/dkp-20868/%DA%AF%D9%88%D8%B4%DB%8C-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84-%D8%B3%D9%88%D9%86%DB%8C-%D8%A7%DA%A9%D8%B3%D9%BE%D8%B1%DB%8C%D8%A7-%D8%B2%D8%AF-%D8%A2%D9%84%D8%AA%D8%B1%D8%A7/";
+    }
+
+    function nextLightboxImg() {
+      currentLightboxIdx = (currentLightboxIdx + 1) % galleryImages.length;
+      updateLightboxContent();
+    }
+
+    function prevLightboxImg() {
+      currentLightboxIdx = (currentLightboxIdx - 1 + galleryImages.length) % galleryImages.length;
+      updateLightboxContent();
+    }
+
+    function filterGallery(category, btn) {
+      document.querySelectorAll('.gallery-filter-btn').forEach(b => {
+        b.classList.remove('active', 'btn-primary');
+        b.classList.add('btn-outline-secondary');
+      });
+      if (btn) {
+        btn.classList.add('active', 'btn-primary');
+        btn.classList.remove('btn-outline-secondary');
+      }
+
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        const cat = item.getAttribute('data-category');
+        if (category === 'all' || cat === category) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Keyboard navigation listener for lightbox
+    document.addEventListener('keydown', (e) => {
+      const modalEl = document.getElementById('lightboxModal');
+      if (modalEl && modalEl.classList.contains('show')) {
+        if (e.key === 'ArrowRight') nextLightboxImg();
+        else if (e.key === 'ArrowLeft') prevLightboxImg();
+      }
+    });
+  </script>
+</body>
+</html>
