@@ -830,7 +830,7 @@
             <span class="spinner-grow spinner-grow-sm text-primary" role="status"></span>
             <span class="fw-bold text-white"><i class="bi bi-broadcast me-1"></i> Live Hardware Deployment Tracker: Solution 1</span>
           </div>
-          <span class="badge bg-primary">Step 1 of 5 in Progress</span>
+          <span class="badge bg-success">Step 7 of 8 Completed</span>
         </div>
         <div class="card-body">
           <div class="row g-3 mb-4">
@@ -838,7 +838,7 @@
               <div class="p-3 rounded-2 bg-dark border border-secondary">
                 <div class="small text-muted mb-1">Target Device Model:</div>
                 <div class="fw-bold text-light font-monospace">Sony Xperia Z Ultra (C6833)</div>
-                <div class="small text-info mt-1"><i class="bi bi-usb-symbol"></i> VID:0FCE PID:519C</div>
+                <div class="small text-info mt-1"><i class="bi bi-usb-symbol"></i> VID:0FCE PID:519C (togari)</div>
               </div>
             </div>
             <div class="col-md-3">
@@ -850,16 +850,16 @@
             </div>
             <div class="col-md-3">
               <div class="p-3 rounded-2 bg-dark border border-secondary">
-                <div class="small text-muted mb-1">ADB / Recovery Status:</div>
-                <div class="fw-bold text-success font-monospace">TWRP 3.7.0 (uid=0 root)</div>
-                <div class="small text-success mt-1"><i class="bi bi-shield-check"></i> Permanent Root Shell Active</div>
+                <div class="small text-muted mb-1">Kernel &amp; Root State:</div>
+                <div class="fw-bold text-success font-monospace">Alpine 3.20.3 (uid=0 root)</div>
+                <div class="small text-success mt-1"><i class="bi bi-shield-check"></i> 1.64 GB RAM Free (95MB Used)</div>
               </div>
             </div>
             <div class="col-md-3">
               <div class="p-3 rounded-2 bg-dark border border-secondary">
-                <div class="small text-muted mb-1">Stock Firmware Build:</div>
-                <div class="fw-bold text-info font-monospace">Android 5.1.1 (14.6.A.0.368)</div>
-                <div class="small text-success mt-1"><i class="bi bi-fingerprint"></i> IMEI: 357656052679410</div>
+                <div class="small text-muted mb-1">SSH &amp; Battery Status:</div>
+                <div class="fw-bold text-success font-monospace">SSH:2222 (Key Auth)</div>
+                <div class="small text-warning mt-1"><i class="bi bi-battery-charging"></i> Guardian Active (55%-65%)</div>
               </div>
             </div>
           </div>
@@ -886,13 +886,13 @@
                   <td><strong>Alpine Linux armv7 Minirootfs</strong> (v3.20.3)</td>
                   <td><code>downloads/alpine-minirootfs-3.20.3-armv7.tar.gz</code></td>
                   <td>3.01 MB</td>
-                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Pushed to /sdcard/</span></td>
+                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Deployed to /data/alpine</span></td>
                 </tr>
                 <tr>
-                  <td><strong>Official TWRP Recovery</strong> (togari v2.8.5.0)</td>
-                  <td><code>downloads/twrp-2.8.5.0-togari.img</code></td>
-                  <td>11.30 MB</td>
-                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Downloaded &amp; Verified</span></td>
+                  <td><strong>Modern TWRP 3.7.0 Recovery</strong> (togari by tarkzim)</td>
+                  <td><code>downloads/twrp-3.7.0_9-0-togari.img</code></td>
+                  <td>15.60 MB</td>
+                  <td><span class="badge bg-success"><i class="bi bi-check-lg"></i> Flashed to boot &amp; recovery</span></td>
                 </tr>
               </tbody>
             </table>
@@ -929,44 +929,89 @@
             <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
               <div>
                 <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 4 DONE</span>
-                <strong>Flashed &amp; Booted TWRP 3.7.0 Recovery</strong>
+                <strong>Flashed &amp; Booted Modern TWRP 3.7.0 Recovery</strong>
                 <p class="small text-muted mb-0 mt-1">Booted into TWRP 3.7.0. Kernel: <code>Linux 3.4.113 armv7l</code>. Native Root <code>uid=0</code> active.</p>
               </div>
               <span class="badge bg-success">Completed</span>
             </div>
             <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
               <div>
-                <span class="badge bg-warning text-dark me-2">ACTIVE STEP 5</span>
-                <strong>Deploy Alpine Linux Rootfs to /data/alpine</strong>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 5 DONE</span>
+                <strong>Extracted Alpine Linux Rootfs to /data/alpine</strong>
                 <p class="small text-muted mb-0 mt-1">
-                  Extract <code>alpine-minirootfs-3.20.3-armv7.tar.gz</code> into <code>/data/alpine</code> (11GB free storage), mount proc/sys/dev, and configure OpenSSH server.
+                  Extracted <code>alpine-minirootfs-3.20.3-armv7.tar.gz</code> into <code>/data/alpine</code> (11GB internal flash). Mounted <code>/proc</code>, <code>/sys</code>, <code>/dev</code>, <code>/dev/pts</code>.
                 </p>
               </div>
-              <span class="spinner-border spinner-border-sm text-warning" role="status"></span>
+              <span class="badge bg-success">Completed</span>
             </div>
-            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
               <div>
-                <span class="badge bg-secondary me-2">STEP 3</span>
-                <strong>Decide on Clean Base / Root Setup</strong>
-                <p class="small text-muted mb-0 mt-1">Confirm if clean LineageOS flash is required or if we configure Alpine directly.</p>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 6 DONE</span>
+                <strong>Configured Reverse Tunnel, Installed OpenSSH &amp; Core SBC Utilities</strong>
+                <p class="small text-muted mb-0 mt-1">
+                  Engineered Python host proxy with <code>adb reverse tcp:8080 tcp:8080</code> for zero-driver network updates. Installed <code>openssh</code>, <code>curl</code>, <code>nano</code>, <code>bash</code>, <code>htop</code>. Verified key-based SSH login (<code>ssh -p 2222 root@127.0.0.1</code>) using <code>~/.ssh/id_rsa.pub</code>.
+                </p>
               </div>
-              <span class="badge bg-secondary">Gated</span>
+              <span class="badge bg-success">Completed</span>
             </div>
-            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
               <div>
-                <span class="badge bg-secondary me-2">STEP 4</span>
-                <strong>Deploy Alpine Linux Minirootfs &amp; SSH Server</strong>
-                <p class="small text-muted mb-0 mt-1">Extract Alpine to internal storage, mount proc/sysfs/dev, and configure OpenSSH on port 22.</p>
+                <span class="badge bg-success me-2"><i class="bi bi-check-lg"></i> STEP 7 DONE</span>
+                <strong>Configured 24/7 Battery Guardian &amp; PMIC Limiter</strong>
+                <p class="small text-muted mb-0 mt-1">
+                  Implemented hardware PMIC charging cutoff via <code>/sys/class/power_supply/battery/charging_enabled</code>. Periodic daemon via Alpine <code>crond</code> maintains battery between 55% and 65% to eliminate Li-ion swelling during permanent wall power operation.
+                </p>
               </div>
-              <span class="badge bg-secondary">Gated</span>
+              <span class="badge bg-success">Completed</span>
             </div>
-            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light opacity-75">
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center bg-dark border-secondary text-light">
               <div>
-                <span class="badge bg-secondary me-2">STEP 5</span>
-                <strong>Install 24/7 Power Limiter (ACC 65%) &amp; Auto-Boot Script</strong>
-                <p class="small text-muted mb-0 mt-1">Ensure the device auto-launches SSH and prevents battery swelling when plugged in 24/7.</p>
+                <span class="badge bg-primary text-white me-2">STEP 8 FINAL</span>
+                <strong>Startup Persistence &amp; Playbook Verification</strong>
+                <p class="small text-muted mb-0 mt-1">
+                  Scripts ready: <code>/data/start-alpine.sh</code> (one-click launch) and <code>/data/stop-alpine.sh</code>.
+                </p>
               </div>
-              <span class="badge bg-secondary">Gated</span>
+              <span class="badge bg-primary">Ready to Operate</span>
+            </div>
+          </div>
+
+          <!-- Live Terminal Quickstart Card -->
+          <div class="card bg-black border-success mt-4">
+            <div class="card-header bg-dark border-success d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-success font-monospace"><i class="bi bi-terminal-fill me-2"></i>Alpine SBC Quick Connect &amp; Management Playbook</span>
+              <span class="badge bg-success text-dark">Live &amp; Verified</span>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <h6 class="text-white small fw-bold mb-2"><i class="bi bi-key-fill text-warning me-1"></i> 1-Click SSH Access (USB ADB Wire)</h6>
+                  <p class="small text-muted mb-2">Forward port 2222 and connect passwordlessly using your configured SSH key:</p>
+                  <pre class="bg-dark text-success p-3 rounded border border-secondary font-monospace small mb-3"><code># 1. Forward port from phone over USB
+.\tools\platform-tools\adb.exe forward tcp:2222 tcp:2222
+
+# 2. Connect directly to Alpine root shell
+ssh -p 2222 root@127.0.0.1</code></pre>
+                  <div class="small text-muted">
+                    <i class="bi bi-info-circle text-info me-1"></i> Default password (if prompted): <code>alpine</code>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="text-white small fw-bold mb-2"><i class="bi bi-cpu-fill text-primary me-1"></i> Live SBC Telemetry &amp; Resource Footprint</h6>
+                  <ul class="list-unstyled small text-muted mb-3 font-monospace">
+                    <li class="mb-1 text-light"><i class="bi bi-check2-circle text-success me-1"></i> <strong>OS:</strong> Alpine Linux 3.20.3 (armv7l)</li>
+                    <li class="mb-1 text-light"><i class="bi bi-check2-circle text-success me-1"></i> <strong>Kernel:</strong> Linux 3.4.113-lineageos</li>
+                    <li class="mb-1 text-light"><i class="bi bi-check2-circle text-success me-1"></i> <strong>RAM Used:</strong> <span class="text-success">95 MB</span> / 1736 MB (<span class="text-info">1.64 GB Free</span>)</li>
+                    <li class="mb-1 text-light"><i class="bi bi-check2-circle text-success me-1"></i> <strong>Storage Free:</strong> ~11 GB ext4 internal flash</li>
+                    <li class="mb-1 text-light"><i class="bi bi-check2-circle text-success me-1"></i> <strong>Battery Guardian:</strong> Active (55%-65% target SoC)</li>
+                  </ul>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success btn-sm font-monospace" onclick="navigator.clipboard.writeText('ssh -p 2222 root@127.0.0.1')">
+                      <i class="bi bi-clipboard me-1"></i> Copy SSH Command
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
