@@ -1,0 +1,3 @@
+# Code-Graph-RAG dependencies for xperia-z-ultra
+# Requires Python 3.12+
+code-graph-rag[treesitter-full,ast-grep]>=0.6.0

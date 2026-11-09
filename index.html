@@ -699,6 +699,7 @@
     <div class="nav-group-title">Interactive Workbench</div>
     <ul class="nav-list" id="navTools">
       <li><a href="#interactive-simulator"><i class="bi bi-calculator"></i> Architecture Chooser</a></li>
+      <li><a href="#flash-images"><i class="bi bi-disc-fill text-warning"></i> Flashable Image Types</a></li>
       <li><a href="#playbook"><i class="bi bi-terminal"></i> Fastboot &amp; Root Playbook</a></li>
     </ul>
 
@@ -1776,6 +1777,431 @@ ssh -p 2222 root@127.0.0.1</code></pre>
       </div>
     </section>
 
+    <!-- Section: Flashable Image Types & Firmware Architecture -->
+    <section id="flash-images" class="mb-5">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+          <h3 class="fw-bold mb-1"><i class="bi bi-disc-fill text-warning me-2"></i>Flashable Image Types &amp; Firmware Formats</h3>
+          <p class="text-muted small mb-0">Comprehensive technical taxonomy of binary images, partition targets, tools, and protocols for Sony Xperia Z Ultra (<code>togari</code> / MSM8974)</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-warning text-dark"><i class="bi bi-layers-fill me-1"></i>6 Image Classes</span>
+          <span class="badge bg-dark border border-secondary text-info font-monospace">MSM8974 / armv7l</span>
+        </div>
+      </div>
+
+      <!-- Domain Filter Tabs -->
+      <div class="p-3 rounded-3 mb-4" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+          <div class="small text-muted fw-bold text-uppercase"><i class="bi bi-funnel me-1"></i>Filter by Flashing Domain:</div>
+          <div class="btn-group btn-group-sm flex-wrap" role="group" aria-label="Image category filter">
+            <button type="button" class="btn btn-primary img-filter-btn active" onclick="filterImages('all', this)">All Formats (6)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('fastboot', this)">Fastboot (.img)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('stock', this)">Sony Stock (.ftf / .sin)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('recovery', this)">Recovery ZIPs (.zip)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('rootfs', this)">Linux Rootfs (.tar.gz)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('edl', this)">Qualcomm EDL (.mbn / 9008)</button>
+            <button type="button" class="btn btn-outline-secondary img-filter-btn" onclick="filterImages('ta', this)">Trim Area (.ta)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Firmware Comparison Matrix Table -->
+      <div class="table-responsive mb-4 rounded-3" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+        <table class="table table-dark table-hover align-middle mb-0 small">
+          <thead class="table-dark text-muted text-uppercase" style="background: var(--app-bg-card-inner); border-bottom: 2px solid var(--app-border);">
+            <tr>
+              <th scope="col" style="min-width: 140px;">Image Format</th>
+              <th scope="col" style="min-width: 150px;">Hardware Mode &amp; LED</th>
+              <th scope="col" style="min-width: 130px;">Partition Target</th>
+              <th scope="col" style="min-width: 150px;">Host Toolchain</th>
+              <th scope="col" style="min-width: 120px;">Bootloader</th>
+              <th scope="col" style="min-width: 240px;">Primary Deployment Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge bg-primary font-monospace">.IMG</span> <span class="fw-bold text-light">Raw Partition</span></td>
+              <td><span class="badge bg-primary"><i class="bi bi-circle-fill me-1" style="color: #60a5fa;"></i>Fastboot (BLUE)</span></td>
+              <td><code>boot</code>, <code>FOTAKernel</code>, <code>system</code></td>
+              <td>Google <code>fastboot.exe</code></td>
+              <td><span class="badge bg-danger">Unlocked Only</span></td>
+              <td>Kernel injection, TWRP recovery installation, postmarketOS raw system partitions.</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-success font-monospace">.FTF / .SIN</span> <span class="fw-bold text-light">Sony Stock Bundle</span></td>
+              <td><span class="badge bg-success"><i class="bi bi-circle-fill me-1" style="color: #4ade80;"></i>Flashmode (GREEN)</span></td>
+              <td>All eMMC + Radio Baseband</td>
+              <td>Androxyde Flashtool, Sony Emma</td>
+              <td><span class="badge bg-success">Locked or Unlocked</span></td>
+              <td>Factory unbrick, full firmware restore (5.1.1 Lollipop 14.6.A.1.236), radio/modem repair.</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-info text-dark font-monospace">.ZIP</span> <span class="fw-bold text-light">Recovery Package</span></td>
+              <td><span class="badge bg-secondary"><i class="bi bi-sliders me-1"></i>TWRP 3.7.0 Recovery</span></td>
+              <td>Mounted Partitions (system, boot)</td>
+              <td><code>adb sideload</code> or TWRP Install</td>
+              <td><span class="badge bg-danger">Unlocked Only</span></td>
+              <td>Custom ROMs (LineageOS 14.1/17.1), Magisk root, custom kernel zip, OpenGApps.</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-warning text-dark font-monospace">.TAR.GZ</span> <span class="fw-bold text-light">Linux Rootfs</span></td>
+              <td><span class="badge bg-dark border border-secondary text-light"><i class="bi bi-terminal me-1"></i>OS Userland / Chroot</span></td>
+              <td><code>/data/alpine</code> or ext4 loop</td>
+              <td><code>adb push</code> + <code>tar</code> / <code>busybox</code></td>
+              <td><span class="badge bg-success">Locked (PRoot) / Root (Chroot)</span></td>
+              <td>Headless Alpine 3.20.3 Linux server, Debian minimal container, zero-flashing server.</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-danger font-monospace">.MBN / .XML</span> <span class="fw-bold text-light">Qualcomm EDL</span></td>
+              <td><span class="badge bg-danger"><i class="bi bi-lightning-charge me-1"></i>EDL 9008 (Blank Screen)</span></td>
+              <td>SBL1, SBL2, TZ, RPM, ABOOT</td>
+              <td>QFIL, QPST, <code>edl.py</code></td>
+              <td><span class="badge bg-warning text-dark">Hardware Level</span></td>
+              <td>Emergency silicon-level unbrick when bootloader is dead, Qualcomm MSM8974 primary rebuild.</td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-purple font-monospace" style="background: #9b59b6;">.TA</span> <span class="fw-bold text-light">Trim Area Backup</span></td>
+              <td><span class="badge bg-dark border border-secondary text-purple"><i class="bi bi-shield-lock me-1"></i>Rooted Android Shell</span></td>
+              <td>Partition 1 (TA / Dev Security)</td>
+              <td><code>Backup-TA</code> script, dd</td>
+              <td><span class="badge bg-warning text-dark">Before Unlock Only</span></td>
+              <td>Protects unique DRM keys, Bravia/X-Reality processing, and original camera calibration.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Detailed Image Cards Grid -->
+      <div class="row g-4" id="imageCardsContainer">
+
+        <!-- Card 1: Fastboot Raw Partition Images (.img) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="fastboot">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-primary font-monospace mb-1">.IMG FORMAT</span>
+                <h4 class="fw-bold text-white mb-0">1. Fastboot Raw Partition Images</h4>
+              </div>
+              <span class="badge bg-primary"><i class="bi bi-circle-fill me-1" style="color: #93c5fd;"></i>Fastboot (BLUE LED)</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Direct raw or sparse filesystem partition binaries written directly to eMMC block devices via the S1 Bootloader fastboot interface.
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Partitions:</div>
+                  <div class="text-light fw-bold font-monospace">boot, FOTAKernel, system</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">fastboot.exe (v37.0.1)</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Bootloader State:</div>
+                  <div class="text-danger fw-bold"><i class="bi bi-unlock-fill me-1"></i>Unlocked Bootloader Only</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Local Files in Repo:</div>
+                  <div class="text-success fw-bold font-monospace">downloads/twrp-3.7.0_9-0-togari.img</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">Standard Flashing Commands:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># Connect phone: Hold Vol-Up &amp; plug USB (Solid BLUE LED)</span><br>
+              fastboot devices<br>
+              <span class="text-muted"># Flash TWRP custom recovery to boot partition</span><br>
+              fastboot flash boot downloads/twrp-3.7.0_9-0-togari.img<br>
+              <span class="text-muted"># Flash to dedicated Sony FOTAKernel partition</span><br>
+              fastboot flash FOTAKernel downloads/twrp-3.7.0_9-0-togari.img<br>
+              <span class="text-muted"># Optional: Direct tethered boot without overwriting flash</span><br>
+              fastboot boot downloads/twrp-3.7.0_9-0-togari.img
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Sony Stock Firmware Bundles (.FTF & .SIN) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="stock">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-success font-monospace mb-1">.FTF / .SIN FORMAT</span>
+                <h4 class="fw-bold text-white mb-0">2. Sony Stock Firmware Bundles</h4>
+              </div>
+              <span class="badge bg-success"><i class="bi bi-circle-fill me-1" style="color: #86efac;"></i>Flashmode (GREEN LED)</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Sony's proprietary signed firmware archive format (`.ftf` is a ZIP container containing Sony encrypted `.sin` partition images: <code>kernel.sin</code>, <code>system.sin</code>, <code>amss_fs_*.sin</code>, <code>loader.sin</code>).
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Partitions:</div>
+                  <div class="text-light fw-bold font-monospace">Full NAND + Qualcomm Radio</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">Androxyde Flashtool / Sony Emma</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Bootloader State:</div>
+                  <div class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Works on Locked &amp; Unlocked</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Stock OS:</div>
+                  <div class="text-light fw-bold font-monospace">Android 5.1.1 (14.6.A.1.236)</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">Deployment Instructions:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># 1. Download official stock FTF for C6833/C6802 via XperiFirm</span><br>
+              <span class="text-muted"># 2. Place FTF inside Flashtool firmwares directory</span><br>
+              <span class="text-muted"># 3. Click Lightning Icon -> Select Flashmode -> Choose Firmware</span><br>
+              <span class="text-muted"># 4. Turn OFF phone. Hold Volume DOWN &amp; connect USB cable (GREEN LED)</span><br>
+              <span class="text-muted"># 5. Flashtool executes S1 protocol handshake &amp; unsin payload writing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Custom Recovery Flashable Packages (.ZIP) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="recovery">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-info text-dark font-monospace mb-1">.ZIP FORMAT</span>
+                <h4 class="fw-bold text-white mb-0">3. Custom Recovery Flashable Packages</h4>
+              </div>
+              <span class="badge bg-secondary"><i class="bi bi-sliders me-1"></i>TWRP Sideload</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Standard Android OTA update archives containing <code>META-INF/com/google/android/updater-script</code> or <code>update-binary</code> along with block images (<code>system.new.dat.br</code>) or custom kernel images.
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Partitions:</div>
+                  <div class="text-light fw-bold font-monospace">/system, /boot, dynamic</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">TWRP 3.7.0 + adb sideload</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Bootloader State:</div>
+                  <div class="text-danger fw-bold"><i class="bi bi-unlock-fill me-1"></i>Unlocked Bootloader Only</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Common Releases:</div>
+                  <div class="text-light fw-bold font-monospace">LineageOS 14.1 / 17.1, Magisk</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">TWRP Sideload CLI Sequence:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># In TWRP Recovery GUI: Tap Advanced -> ADB Sideload -> Swipe to Start</span><br>
+              adb devices<br>
+              <span class="text-muted"># Sideload LineageOS 14.1 ROM for togari</span><br>
+              adb sideload lineage-14.1-togari.zip<br>
+              <span class="text-muted"># Sideload Magisk Root (Optional for pure Linux chroot)</span><br>
+              adb sideload Magisk-v27.0.zip
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Linux OS Rootfs Tarballs (.TAR.GZ) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="rootfs">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-warning text-dark font-monospace mb-1">.TAR.GZ FORMAT</span>
+                <h4 class="fw-bold text-white mb-0">4. Linux Root Filesystem Tarballs</h4>
+              </div>
+              <span class="badge bg-dark border border-secondary text-light"><i class="bi bi-terminal me-1"></i>Linux Userland</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Complete standalone POSIX/Linux directory trees (musl or glibc) containing <code>/bin</code>, <code>/etc</code>, <code>/lib</code>, and package managers (<code>apk</code>, <code>apt</code>). Booted natively atop the Android kernel via chroot.
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Directory / Loop:</div>
+                  <div class="text-light fw-bold font-monospace">/data/alpine (11GB ext4 internal)</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">adb push, tar, busybox, chroot</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Bootloader State:</div>
+                  <div class="text-success fw-bold"><i class="bi bi-shield-check me-1"></i>No Unlock Needed for PRoot</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Local Files in Repo:</div>
+                  <div class="text-success fw-bold font-monospace">downloads/alpine-minirootfs-3.20.3-armv7.tar.gz</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">Deployment &amp; Extraction Flow:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># Push Alpine Minirootfs to internal storage</span><br>
+              adb push downloads/alpine-minirootfs-3.20.3-armv7.tar.gz /data/<br>
+              <span class="text-muted"># Extract rootfs inside chroot jail</span><br>
+              adb shell "mkdir -p /data/alpine && tar -xzf /data/alpine-minirootfs-3.20.3-armv7.tar.gz -C /data/alpine"<br>
+              <span class="text-muted"># Mount virtual filesystems and enter root userland</span><br>
+              adb shell "mount -t proc proc /data/alpine/proc && chroot /data/alpine /bin/sh"
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Qualcomm EDL Emergency Download (.MBN / 9008) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="edl">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-danger font-monospace mb-1">.MBN / .HEX / .XML</span>
+                <h4 class="fw-bold text-white mb-0">5. Qualcomm EDL Emergency Images</h4>
+              </div>
+              <span class="badge bg-danger"><i class="bi bi-lightning-charge me-1"></i>EDL 9008 (Blank Screen)</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Low-level Qualcomm primary boot ROM loaders (<code>MPRG8974.mbn</code>, <code>8974_msimage.mbn</code>) and XML partition maps (<code>rawprogram0.xml</code>, <code>patch0.xml</code>) executed when the device is completely hard-bricked.
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Partitions:</div>
+                  <div class="text-light fw-bold font-monospace">SBL1, SBL2, SBL3, TZ, RPM, ABOOT</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">QFIL / QPST / edl.py (USB 05c6:9008)</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Hardware State:</div>
+                  <div class="text-warning fw-bold"><i class="bi bi-cpu-fill me-1"></i>Emergency Silicon Interface</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Trigger Method:</div>
+                  <div class="text-light fw-bold">Test Point short or corrupt SBL</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">Qualcomm Firehose / Sahara Protocol:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># Device shows as Qualcomm HS-USB QDLoader 9008 (VID:05c6 PID:9008)</span><br>
+              <span class="text-muted"># Load Sahara emergency programmer using open-source edl tool</span><br>
+              python edl.py --loader MPRG8974.mbn --memory emmc<br>
+              <span class="text-muted"># Write primary bootloaders to recover Fastboot &amp; Flashmode</span><br>
+              python edl.py write sbl1 sbl1.mbn<br>
+              python edl.py write aboot emmc_appsboot.mbn
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Trim Area Security & DRM Partition (.TA) -->
+        <div class="col-lg-6 image-card-col" data-img-cat="ta">
+          <div class="feature-card h-100 p-4 rounded-3 position-relative" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <span class="badge bg-purple font-monospace mb-1" style="background: #9b59b6;">.TA FORMAT</span>
+                <h4 class="fw-bold text-white mb-0">6. Trim Area Security &amp; DRM Partition</h4>
+              </div>
+              <span class="badge bg-dark border border-secondary text-purple"><i class="bi bi-shield-lock me-1"></i>Security TA</span>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Unique 2 MB hardware security partition (Partition 1) holding device-specific cryptographic DRM keys, X-Reality / Bravia Engine video processing keys, device serial numbers, and camera calibration tables.
+            </p>
+
+            <div class="row g-2 mb-3 small">
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Target Partition:</div>
+                  <div class="text-light fw-bold font-monospace">/dev/block/.../by-name/TA (2 MB)</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Required Tool:</div>
+                  <div class="text-info fw-bold font-monospace">Backup-TA (by DevShaft) / iovyroot</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Critical Warning:</div>
+                  <div class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i>MUST BACK UP BEFORE UNLOCKING</div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded bg-dark border border-secondary">
+                  <div class="text-muted">Loss Consequence:</div>
+                  <div class="text-warning fw-bold">Permanent loss of Bravia &amp; DRM keys</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="small text-muted mb-2 fw-bold text-uppercase">TA Preservation Command Sequence:</div>
+            <div class="terminal-box mb-2">
+              <span class="text-muted"># 1. Gain temporary root on locked stock Android 4.4/5.0 via iovyroot</span><br>
+              <span class="text-muted"># 2. Run Backup-TA on PC host</span><br>
+              ./backup-ta.bat backup<br>
+              <span class="text-muted"># Generates: TA-backup-YYYYMMDD.XXXXXX.zip (keep safe on PC/cloud!)</span><br>
+              <span class="text-muted"># 3. Only after TA is backed up, unlock bootloader via fastboot</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- Section: Fastboot & Flashing Playbook -->
     <section id="playbook" class="mb-5">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -2055,7 +2481,31 @@ ssh -p 2222 root@127.0.0.1</code></pre>
     }
 
     // =========================================================================
-    // Digikala Hardware Gallery & Lightbox Controller
+
+    // =========================================================================
+    // Flashable Image Types Category Filter
+    // =========================================================================
+    function filterImages(cat, btn) {
+      document.querySelectorAll('.img-filter-btn').forEach(b => {
+        b.classList.remove('active', 'btn-primary');
+        b.classList.add('btn-outline-secondary');
+      });
+      if (btn) {
+        btn.classList.add('active', 'btn-primary');
+        btn.classList.remove('btn-outline-secondary');
+      }
+
+      document.querySelectorAll('.image-card-col').forEach(card => {
+        const cardCat = card.getAttribute('data-img-cat');
+        if (cat === 'all' || cardCat === cat) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+        // Digikala Hardware Gallery & Lightbox Controller
     // =========================================================================
     const galleryImages = [
       {

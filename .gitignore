@@ -10,3 +10,13 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
+
+# Code-Graph-RAG & Environment
+.cgr/
+.cgr-cache/
+*.sqlite
+*.sqlite3
+*.bin
+.env
+.env.local
+cgr-export*.json
