@@ -11,6 +11,11 @@ Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
 
+# Downloaded binaries, clones, and packages
+downloads/packages/
+downloads/libnfc/
+downloads/lvgl/
+
 # Code-Graph-RAG & Environment
 .cgr/
 .cgr-cache/
