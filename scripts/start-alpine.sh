@@ -18,6 +18,11 @@ mountpoint -q "$ALPINE_DIR/sys" || mount -t sysfs sys "$ALPINE_DIR/sys"
 mountpoint -q "$ALPINE_DIR/dev" || mount -o bind /dev "$ALPINE_DIR/dev"
 mountpoint -q "$ALPINE_DIR/dev/pts" || mount -t devpts devpts "$ALPINE_DIR/dev/pts"
 
+# Ensure modular app slot is mounted
+[ -d "$ALPINE_DIR/opt/app" ] || mkdir -p "$ALPINE_DIR/opt/app"
+[ -d "/data/modular-app" ] || mkdir -p "/data/modular-app"
+mountpoint -q "$ALPINE_DIR/opt/app" || mount -o bind /data/modular-app "$ALPINE_DIR/opt/app"
+
 # Ensure DNS resolution
 cat << 'EOF' > "$ALPINE_DIR/etc/resolv.conf"
 nameserver 1.1.1.1
@@ -51,4 +56,12 @@ fi
 # Run Battery Guardian once immediately
 chroot "$ALPINE_DIR" /bin/sh /usr/local/bin/battery-guardian.sh
 
-echo "[+] Alpine Linux SBC ready! SSH available on port 2222."
+# Start Modular App Kiosk Supervisor (Shows App Screen ONLY on boot)
+if [ -f "$ALPINE_DIR/usr/local/bin/kiosk_autostart.sh" ]; then
+    if ! pgrep -f "kiosk_autostart.sh" > /dev/null 2>&1; then
+        echo "[*] Launching Fullscreen Kiosk App Supervisor (Direct Framebuffer)..."
+        chroot "$ALPINE_DIR" /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin /bin/sh -c "nohup /bin/sh /usr/local/bin/kiosk_autostart.sh > /var/log/kiosk_supervisor.log 2>&1 &"
+    fi
+fi
+
+echo "[+] Alpine Linux SBC ready! SSH available on port 2222. Kiosk screen active on FB0."

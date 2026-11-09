@@ -1,0 +1,29 @@
+{
+  "name": "togari-all-module-diagnostic",
+  "version": "1.0.0",
+  "author": "Sony Xperia Z Ultra Open Appliance Project",
+  "description": "Comprehensive all-module hardware diagnostic and acceptance test suite for Xperia Z Ultra (togari). Tests Screen, Touch, Gyro/Accel, Wi-Fi, Bluetooth LE, Cellular GPRS/LTE, NFC, and PMIC Battery Guardian.",
+  "target_arch": "armv7l",
+  "runtime": "python3",
+  "entrypoint": "entrypoint.sh",
+  "isolated_slot": "/opt/app",
+  "required_hardware_nodes": [
+    "/dev/graphics/fb0",
+    "/dev/input/event*",
+    "/sys/bus/iio/devices/iio:device*",
+    "/dev/ttyHS0",
+    "/dev/pn544",
+    "/dev/smdcntl0",
+    "/sys/class/power_supply/battery"
+  ],
+  "capabilities": [
+    "DIRECT_FRAMEBUFFER",
+    "EVDEV_TOUCH",
+    "IIO_SENSORS",
+    "QUALCOMM_WLAN",
+    "BLUEZ_HCI",
+    "LIBQMI_CELLULAR",
+    "LIBNFC_PN544",
+    "PMIC_BATTERY_GUARDIAN"
+  ]
+}
