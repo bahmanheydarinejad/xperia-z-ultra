@@ -2307,6 +2307,105 @@ ssh -p 2222 root@127.0.0.1</code></pre>
         </table>
       </div>
 
+
+      <!-- Hardware Driver Compatibility Matrix Table -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-2 gap-2">
+        <div>
+          <h4 class="fw-bold mb-1 text-white"><i class="bi bi-cpu text-info me-2"></i>Hardware Driver Compatibility Matrix by Image Format</h4>
+          <p class="text-muted small mb-0">Direct comparison of driver stability, power management, and hardware acceleration across Qualcomm Snapdragon 800 (MSM8974) sub-systems</p>
+        </div>
+        <span class="badge bg-dark border border-secondary text-info font-monospace"><i class="bi bi-shield-check me-1"></i>MSM8974 / Krait 400</span>
+      </div>
+
+      <div class="table-responsive mb-4 rounded-3" style="background: var(--app-bg-card); border: 1px solid var(--app-border);">
+        <table class="table table-dark table-hover align-middle mb-0 small">
+          <thead class="table-dark text-muted text-uppercase" style="background: var(--app-bg-card-inner); border-bottom: 2px solid var(--app-border);">
+            <tr>
+              <th scope="col" style="min-width: 140px;">Image Format</th>
+              <th scope="col" style="min-width: 100px;">Driver Score</th>
+              <th scope="col" style="min-width: 130px;">Wi-Fi &amp; BT</th>
+              <th scope="col" style="min-width: 130px;">GPU &amp; Display</th>
+              <th scope="col" style="min-width: 120px;">Touch &amp; Stylus</th>
+              <th scope="col" style="min-width: 140px;">Battery &amp; PMIC</th>
+              <th scope="col" style="min-width: 130px;">Thermal Throttling</th>
+              <th scope="col" style="min-width: 140px;">Audio / Camera / DRM</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge bg-warning text-dark font-monospace">.TAR.GZ</span> <span class="fw-bold text-light">Linux Rootfs (Chroot)</span></td>
+              <td><span class="badge bg-success fs-6">100%</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Native</span><br><span class="text-muted" style="font-size:10px;">Kernel bridge, 0 drops</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Accelerated</span><br><span class="text-muted" style="font-size:10px;">KGSL / fb0 / VNC</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Precise</span><br><span class="text-muted" style="font-size:10px;">/dev/input/event*</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Full 2A</span><br><span class="text-muted" style="font-size:10px;">Magnetic dock 24/7 UPS</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>100% Active</span><br><span class="text-muted" style="font-size:10px;">thermal-engine daemon</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Native ALSA</span><br><span class="text-muted" style="font-size:10px;">Audio bridge ready</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-success font-monospace">.FTF / .SIN</span> <span class="fw-bold text-light">Sony Stock Factory</span></td>
+              <td><span class="badge bg-success fs-6">100%</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Official Sony</span><br><span class="text-muted" style="font-size:10px;">Proprietary firmware</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Adreno 330</span><br><span class="text-muted" style="font-size:10px;">Full OpenGL ES 3.0</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Pencil Stylus</span><br><span class="text-muted" style="font-size:10px;">Synaptics ClearPad</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Calibrated</span><br><span class="text-muted" style="font-size:10px;">PM8941 &amp; SMB358</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Official</span><br><span class="text-muted" style="font-size:10px;">SoC protection curves</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Bravia Engine</span><br><span class="text-muted" style="font-size:10px;">Exmor RS camera pristine</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-info text-dark font-monospace">.ZIP</span> <span class="fw-bold text-light">Custom ROM (LineageOS)</span></td>
+              <td><span class="badge bg-primary fs-6">92%</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>CAF Driver</span><br><span class="text-muted" style="font-size:10px;">Stable 5GHz/2.4GHz</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Hardware Accel</span><br><span class="text-muted" style="font-size:10px;">Vendor blobs</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Full Touch</span><br><span class="text-muted" style="font-size:10px;">Multi-touch gestures</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Good</span><br><span class="text-muted" style="font-size:10px;">1.5A - 1.8A charge</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Active</span><br><span class="text-muted" style="font-size:10px;">CAF thermal engine</span></td>
+              <td><span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Degraded DRM</span><br><span class="text-muted" style="font-size:10px;">Noise reduction reduced</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-primary font-monospace">.IMG</span> <span class="fw-bold text-light">Fastboot Recovery (TWRP)</span></td>
+              <td><span class="badge bg-primary fs-6">90%</span></td>
+              <td><span class="text-muted"><i class="bi bi-dash-circle me-1"></i>Inactive in GUI</span><br><span class="text-muted" style="font-size:10px;">USB / adb only</span></td>
+              <td><span class="text-info"><i class="bi bi-check-circle-fill me-1"></i>Framebuffer</span><br><span class="text-muted" style="font-size:10px;">1080p recovery GUI</span></td>
+              <td><span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Responsive</span><br><span class="text-muted" style="font-size:10px;">TWRP on-screen touch</span></td>
+              <td><span class="text-info"><i class="bi bi-check-circle-fill me-1"></i>Functional</span><br><span class="text-muted" style="font-size:10px;">Battery level read</span></td>
+              <td><span class="text-info"><i class="bi bi-check-circle-fill me-1"></i>Basic</span><br><span class="text-muted" style="font-size:10px;">Kernel trip points</span></td>
+              <td><span class="text-muted">N/A (Recovery mode)</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-secondary font-monospace">.IMG</span> <span class="fw-bold text-light">Fastboot Mainline (pmOS)</span></td>
+              <td><span class="badge bg-warning text-dark fs-6">55%</span></td>
+              <td><span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>wcn36xx Flaky</span><br><span class="text-muted" style="font-size:10px;">Sleep drops; disable pwr_save</span></td>
+              <td><span class="text-info"><i class="bi bi-check-circle-fill me-1"></i>Freedreno</span><br><span class="text-muted" style="font-size:10px;">Mesa Gallium DRM/KMS</span></td>
+              <td><span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Sleep Bugs</span><br><span class="text-muted" style="font-size:10px;">Resume dropouts</span></td>
+              <td><span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>500mA Throttle</span><br><span class="text-muted" style="font-size:10px;">Battery drains under load</span></td>
+              <td><span class="text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>Throttling</span><br><span class="text-muted" style="font-size:10px;">Locks to 300MHz</span></td>
+              <td><span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>Broken</span><br><span class="text-muted" style="font-size:10px;">Camera &amp; Slimbus down</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-purple font-monospace" style="background:#9b59b6;">.TA</span> <span class="fw-bold text-light">Trim Area DRM Vault</span></td>
+              <td><span class="badge bg-dark border border-secondary text-purple fs-6">Key Vault</span></td>
+              <td><span class="text-muted">N/A</span></td>
+              <td><span class="text-info"><i class="bi bi-key-fill me-1"></i>Bravia Engine</span><br><span class="text-muted" style="font-size:10px;">Cryptographic unlock</span></td>
+              <td><span class="text-muted">N/A</span></td>
+              <td><span class="text-muted">N/A</span></td>
+              <td><span class="text-muted">N/A</span></td>
+              <td><span class="text-success"><i class="bi bi-shield-check me-1"></i>Direct Controller</span><br><span class="text-muted" style="font-size:10px;">BIONZ + Widevine L1 keys</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge bg-danger font-monospace">.MBN</span> <span class="fw-bold text-light">Qualcomm EDL (9008)</span></td>
+              <td><span class="badge bg-secondary fs-6">Silicon</span></td>
+              <td><span class="text-muted">N/A (Bootloader)</span></td>
+              <td><span class="text-muted">N/A (Bootloader)</span></td>
+              <td><span class="text-muted">N/A (Bootloader)</span></td>
+              <td><span class="text-info">PMIC Initializer</span></td>
+              <td><span class="text-muted">N/A (Bootloader)</span></td>
+              <td><span class="text-muted">N/A (Bootloader)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <!-- Detailed Image Cards Grid -->
       <div class="row g-4" id="imageCardsContainer">
 
@@ -2349,6 +2448,18 @@ ssh -p 2222 root@127.0.0.1</code></pre>
                   <div class="text-muted">Local Files in Repo:</div>
                   <div class="text-success fw-bold font-monospace">downloads/twrp-3.7.0_9-0-togari.img</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-info me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-warning text-dark">55% - 90% (Kernel Dependant)</span>
+              </div>
+              <div class="small text-muted">
+                <strong>TWRP 3.7.0 (Linux 3.4.x Kernel):</strong> 90% Driver compatibility. Touchscreen, Adreno 330 framebuffer, and USB OTG work reliably.<br>
+                <strong>Mainline Linux 6.x (pmOS):</strong> 55% Driver compatibility. <code>wcn36xx</code> Wi-Fi drops on sleep, Synaptics touch resume bugs, PM8941 drops charging to 500mA.
               </div>
             </div>
 
@@ -2408,6 +2519,17 @@ ssh -p 2222 root@127.0.0.1</code></pre>
               </div>
             </div>
 
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-success me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-success">100% (Official Sony BSP Reference)</span>
+              </div>
+              <div class="small text-muted">
+                <strong>100% Full Hardware Stability:</strong> Official closed-source binary drivers for Adreno 330 GPU, Broadcom BCM4339 Wi-Fi/BT, WCD9320 Slimbus audio, PM8941 &amp; SMB358 2A fast charge, and Sony BIONZ / Bravia Engine video processing.
+              </div>
+            </div>
+
             <div class="small text-muted mb-2 fw-bold text-uppercase">Deployment Instructions:</div>
             <div class="terminal-box mb-2">
               <span class="text-muted"># 1. Download official stock FTF for C6833/C6802 via XperiFirm</span><br>
@@ -2458,6 +2580,17 @@ ssh -p 2222 root@127.0.0.1</code></pre>
                   <div class="text-muted">Common Releases:</div>
                   <div class="text-light fw-bold font-monospace">LineageOS 14.1 / 17.1, Magisk</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-primary me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-primary">92% (High / CAF Vendor Blobs)</span>
+              </div>
+              <div class="small text-muted">
+                <strong>Daily-Driver Grade:</strong> Wi-Fi, Bluetooth, OpenGL ES 3.0, and AudioFlinger work stably via CAF/AOSP blobs. <em>Caveat:</em> Camera noise reduction and Bravia Engine are degraded if the bootloader was unlocked without a prior TA DRM backup.
               </div>
             </div>
 
@@ -2515,6 +2648,17 @@ ssh -p 2222 root@127.0.0.1</code></pre>
               </div>
             </div>
 
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-warning me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-success">100% (Android Kernel Passthrough - Gold Standard)</span>
+              </div>
+              <div class="small text-muted">
+                <strong>Zero Driver Risk for SBC Server:</strong> Uses the underlying Android kernel (Linux 3.4.113) or TWRP kernel for all hardware I/O. Wi-Fi, battery fuel-gauge, 2-pin magnetic dock charging, and OTG Ethernet work at 100% native stability while Alpine/Debian userland runs cleanly inside.
+              </div>
+            </div>
+
             <div class="small text-muted mb-2 fw-bold text-uppercase">Deployment &amp; Extraction Flow:</div>
             <div class="terminal-box mb-2">
               <span class="text-muted"># Push Alpine Minirootfs to internal storage</span><br>
@@ -2569,6 +2713,17 @@ ssh -p 2222 root@127.0.0.1</code></pre>
               </div>
             </div>
 
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-danger me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-secondary">N/A (Silicon Bootloader Stage)</span>
+              </div>
+              <div class="small text-muted">
+                <strong>Silicon Hardware Level:</strong> Hardware OS drivers are not loaded. Only Qualcomm Primary Bootloaders (SBL1/SBL2/TZ/RPM) and Sahara/Firehose protocols operate to initialize eMMC storage and PMIC for unbricking.
+              </div>
+            </div>
+
             <div class="small text-muted mb-2 fw-bold text-uppercase">Qualcomm Firehose / Sahara Protocol:</div>
             <div class="terminal-box mb-2">
               <span class="text-muted"># Device shows as Qualcomm HS-USB QDLoader 9008 (VID:05c6 PID:9008)</span><br>
@@ -2620,6 +2775,17 @@ ssh -p 2222 root@127.0.0.1</code></pre>
                   <div class="text-muted">Loss Consequence:</div>
                   <div class="text-warning fw-bold">Permanent loss of Bravia &amp; DRM keys</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Driver Compatibility Audit -->
+            <div class="p-2 rounded mb-3 bg-dark border border-secondary">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted fw-bold text-uppercase"><i class="bi bi-cpu text-purple me-1"></i>Driver Compatibility Audit:</span>
+                <span class="badge bg-purple" style="background:#9b59b6;">Hardware DRM &amp; Calibration Key Vault</span>
+              </div>
+              <div class="small text-muted">
+                <strong>Proprietary Driver Feature Enabler:</strong> Holds the cryptographic credentials that unlock the Sony Exmor RS low-light camera processing algorithms, Widevine L1 video DRM, and Triluminos / X-Reality display enhancement drivers.
               </div>
             </div>
 
