@@ -44,9 +44,21 @@ for t in targets:
 
 if tok:
     url = f'https://{tok}@github.com/bahmanheydarinejad/xperia-z-ultra.git'
-    res = subprocess.run(['git', 'push', url, 'main'], capture_output=True, text=True)
-    print('Push return code:', res.returncode)
-    print(res.stdout)
-    print(res.stderr)
+    print('[*] Pushing Git LFS objects and Git commits to remote...')
+    import sys
+    process = subprocess.Popen(
+        ['git', 'push', url, 'main'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1
+    )
+    for line in iter(process.stdout.readline, ''):
+        print(line, end='', flush=True)
+    process.stdout.close()
+    ret = process.wait()
+    print(f'\nPush return code: {ret}')
+    if ret != 0:
+        sys.exit(ret)
 else:
     print('Error: gho token not found in targets.')
