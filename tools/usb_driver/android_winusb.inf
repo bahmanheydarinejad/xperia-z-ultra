@@ -23,6 +23,33 @@ HKR,,Icon,,-1
 
 
 [Google.NTx86]
+; Universal Android ADB Interface (Matches ALL Android Phones)
+%CompositeAdbInterface%     = USB_Install, USB\Class_ff&SubClass_42&Prot_01
+%SingleAdbInterface%        = USB_Install, USB\Class_ff&SubClass_42
+
+; Samsung Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6860&MI_02
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6860&MI_03
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_685E&MI_03
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6864&MI_01
+
+; Xiaomi Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF48&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF80&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF68&MI_01
+
+; Huawei Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_12D1&PID_1037&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_12D1&PID_1051&MI_01
+
+; OnePlus / Oppo / Realme ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_2A70&PID_4EE7&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_22D9&PID_2765&MI_01
+
+; Motorola ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_22B8&PID_2E76&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_22B8&PID_2E82&MI_01
+
 ; Sony Xperia Fastboot / S1Boot
 %SingleAdbInterface%        = USB_Install, USB\VID_0FCE&PID_0DDE
 %CompositeAdbInterface%     = USB_Install, USB\VID_0FCE&PID_0DDE&MI_01
@@ -82,6 +109,33 @@ HKR,,Icon,,-1
 
 
 [Google.NTamd64]
+; Universal Android ADB Interface (Matches ALL Android Phones)
+%CompositeAdbInterface%     = USB_Install, USB\Class_ff&SubClass_42&Prot_01
+%SingleAdbInterface%        = USB_Install, USB\Class_ff&SubClass_42
+
+; Samsung Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6860&MI_02
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6860&MI_03
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_685E&MI_03
+%CompositeAdbInterface%     = USB_Install, USB\VID_04E8&PID_6864&MI_01
+
+; Xiaomi Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF48&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF80&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_2717&PID_FF68&MI_01
+
+; Huawei Universal Android ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_12D1&PID_1037&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_12D1&PID_1051&MI_01
+
+; OnePlus / Oppo / Realme ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_2A70&PID_4EE7&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_22D9&PID_2765&MI_01
+
+; Motorola ADB
+%CompositeAdbInterface%     = USB_Install, USB\VID_22B8&PID_2E76&MI_01
+%CompositeAdbInterface%     = USB_Install, USB\VID_22B8&PID_2E82&MI_01
+
 ; Sony Xperia Fastboot / S1Boot
 %SingleAdbInterface%        = USB_Install, USB\VID_0FCE&PID_0DDE
 %CompositeAdbInterface%     = USB_Install, USB\VID_0FCE&PID_0DDE&MI_01

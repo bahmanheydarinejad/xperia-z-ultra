@@ -4,6 +4,11 @@ ALPINE_DIR="/data/alpine"
 
 echo "[*] Initializing Alpine Linux environment..."
 
+# 0. Ensure OpenRecoveryScript persistence for automatic cold boot
+mkdir -p /cache/recovery
+echo 'cmd sh /data/start-alpine.sh' > /cache/recovery/openrecoveryscript
+chmod 666 /cache/recovery/openrecoveryscript
+
 # Mount filesystem namespaces
 [ -d "$ALPINE_DIR/proc" ] || mkdir -p "$ALPINE_DIR/proc"
 [ -d "$ALPINE_DIR/sys" ] || mkdir -p "$ALPINE_DIR/sys"

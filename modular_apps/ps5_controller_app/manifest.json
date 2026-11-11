@@ -1,0 +1,14 @@
+{
+  "name": "togari-ps5-controller-kiosk",
+  "version": "1.0.0",
+  "description": "Full-screen PS5 DualSense Controller Kiosk with Direct FB0 graphics, multitouch analog sticks, and hardware volume backlight control",
+  "runtime": "python3",
+  "entrypoint": "entrypoint.sh",
+  "isolated_slot": "/opt/app",
+  "hardware_nodes": [
+    "/dev/graphics/fb0",
+    "/dev/input/event1",
+    "/dev/input/event4",
+    "/sys/class/leds/lcd-backlight/brightness"
+  ]
+}
